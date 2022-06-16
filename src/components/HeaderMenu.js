@@ -11,7 +11,7 @@ class HeaderMenu extends React.Component {
 
     render(){
         return (
-            <div style={{display: 'flex'}}>HeaderMenu
+            <div style={{display: 'flex'}}>
                 <DropDown 
                     btnTitle={'title'}
                     options={['option1', 'option2', 'option3']}
