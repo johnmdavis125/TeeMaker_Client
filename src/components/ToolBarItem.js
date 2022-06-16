@@ -1,11 +1,11 @@
 import React from 'react'; 
-import Brushes from './Brushes'; 
+import BrushesPanel from './BrushesPanel';
 
 class ToolBarItem extends React.Component {
     render(){
         return(
             <div>
-                <Brushes />
+                <BrushesPanel />
             </div>
         )
     }

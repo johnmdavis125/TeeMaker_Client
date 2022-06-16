@@ -1,13 +1,13 @@
 import React from 'react'; 
 
-class Brushes extends React.Component {
+class BrushesPanel extends React.Component {
     render(){
         return (
             <div>
-                Brushes
+                BrushesPanel
             </div>
         )
     }
 }
 
-export default Brushes; 
+export default BrushesPanel; 

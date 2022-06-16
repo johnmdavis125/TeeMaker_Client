@@ -2,11 +2,33 @@ import React from 'react';
 import HeaderMenu from './components/HeaderMenu';
 import GlobalControlPanel from './components/GlobalControlPanel';
 import ToolBar from './components/ToolBar';
+import { StandardBrush } from './components/Utils/StandardBrush.mjs';
 import './components/styles/App.css';
 
 class App extends React.Component {
+    componentDidMount(){
+        const canvas = document.getElementById('canvas'); 
+        const ctx = canvas.getContext('2d'); 
+        canvas.width = window.innerHeight * 0.53;
+        canvas.height = window.innerHeight * 0.7;
+        let drawing = false; 
+        canvas.addEventListener('mousemove', (e) => {
+            if (drawing){
+                const brush = new StandardBrush(e.x, e.y);  
+                brush.standardPaint();     
+                }
+            }
+        );
+        canvas.addEventListener('mousedown', () => {
+            drawing = true; 
+        });
+        canvas.addEventListener('mouseup', () => {
+            drawing = false; 
+        });
+    }
+    
     render(){
-
+        
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>
                 <div style={{border: '1px solid blue'}}>
@@ -20,8 +42,9 @@ class App extends React.Component {
                         <ToolBar />
                     </div>                  
                     <div className='column'>
-                        <GlobalControlPanel /> 
-                        <div className="canvas" style={{width: '53vh', height: '70vh', border: '1px solid red'}}>Canvas</div>
+                        <GlobalControlPanel />    
+                        <canvas id="canvas" style={{border: '1px solid red'}}>
+                        </canvas>
                         <div className='layersPanel' style={{height: '13vh', border: '1px solid green'}}>Layers Panel</div>
                     </div>                    
                     <div className='column'>
