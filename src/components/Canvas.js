@@ -1,36 +1,30 @@
-import React from 'react';
+import React from 'react'; 
+import { useEffect, useRef } from 'react';
+import './styles/Canvas.css';
 
-class Canvas extends React.Component {
-    constructor(props){
-        super(props);
-
-        const {canvas, ctx} = this.props;
-        console.log(canvas, ctx); 
-    }
-
-        // canvas.width = window.innerHeight * 0.53;
-        // canvas.height = window.innerHeight * 0.7;
-        // let drawing = false; 
-        // canvas.addEventListener('mousemove', (e) => {
-        //     if (drawing){
-        //         const brush = new StandardBrush(e.x, e.y);  
-        //         brush.standardPaint();     
-        //         }
-        //     }
-        // );
-        // canvas.addEventListener('mousedown', () => {
-        //     drawing = true; 
-        // });
-        // canvas.addEventListener('mouseup', () => {
-        //     drawing = false; 
-        // });
+const Canvas = () => {
+    const canvasRef = useRef(); 
     
-    render() {
-        return (
-            <canvas id="canvas" style={{border: '1px solid red'}}></canvas>
-        )
+    useEffect(() => {
+        console.log(canvasRef);
+        console.log(canvasRef.current);     
+        
+        const canvas = canvasRef.current; 
+        const ctx = canvas.getContext('2d'); 
+        console.log(ctx); 
+    },[]);
+
+    const printMove = () => {
+        console.log('mouseMove'); 
     }
+
+    return (
+        <canvas 
+            id="canvas"    
+            ref={canvasRef}
+            onMouseMove={printMove} 
+        /> 
+    )
 }
 
 export default Canvas; 
-
