@@ -1,34 +1,25 @@
 import React from 'react';
 import HeaderMenu from './components/HeaderMenu';
+import Canvas from './components/Canvas'; 
 import GlobalControlPanel from './components/GlobalControlPanel';
 import ToolBar from './components/ToolBar';
-import { StandardBrush } from './components/Utils/StandardBrush.mjs';
+// import { StandardBrush } from './components/Utils/StandardBrush.mjs';
 import './components/styles/App.css';
 
 class App extends React.Component {
     componentDidMount(){
         const canvas = document.getElementById('canvas'); 
         const ctx = canvas.getContext('2d'); 
-        canvas.width = window.innerHeight * 0.53;
-        canvas.height = window.innerHeight * 0.7;
-        let drawing = false; 
-        canvas.addEventListener('mousemove', (e) => {
-            if (drawing){
-                const brush = new StandardBrush(e.x, e.y);  
-                brush.standardPaint();     
-                }
-            }
-        );
-        canvas.addEventListener('mousedown', () => {
-            drawing = true; 
-        });
-        canvas.addEventListener('mouseup', () => {
-            drawing = false; 
-        });
+
     }
     
     render(){
-        
+        const startDrawing = () => {
+            console.log('startDrawing'); 
+        }
+        const stopDrawing = () => {
+            console.log('stopDrawing'); 
+        }
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>
                 <div style={{border: '1px solid blue'}}>
@@ -43,8 +34,14 @@ class App extends React.Component {
                     </div>                  
                     <div className='column'>
                         <GlobalControlPanel />    
-                        <canvas id="canvas" style={{border: '1px solid red'}}>
-                        </canvas>
+                        {/* <Canvas
+                            canvas={canvas}
+                            ctx={ctx}
+                        /> */}
+                        <canvas id="canvas"
+                            onMouseDown={startDrawing}
+                            onMouseUp={stopDrawing}
+                        ></canvas>
                         <div className='layersPanel' style={{height: '13vh', border: '1px solid green'}}>Layers Panel</div>
                     </div>                    
                     <div className='column'>
