@@ -6,4 +6,5 @@ canvas {
     border: 1px solid red;
     width: 53vh;
     height: 70vh;
+    min-height: 14vh;
 }

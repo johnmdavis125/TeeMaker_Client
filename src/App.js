@@ -4,6 +4,7 @@ import GlobalControlPanel from './components/GlobalControlPanel';
 import ToolBar from './components/ToolBar';
 import Canvas from './components/Canvas'; 
 import './components/styles/App.css';
+import LayersPanel from './components/LayersPanel';
 
 class App extends React.Component {
         
@@ -23,7 +24,7 @@ class App extends React.Component {
                     <div className='column'>
                         <GlobalControlPanel />    
                         <Canvas />                        
-                        <div className='layersPanel' style={{height: '13vh', border: '1px solid green'}}>Layers Panel</div>
+                        <LayersPanel />
                     </div>                    
                     <div className='column'>
                         1/8

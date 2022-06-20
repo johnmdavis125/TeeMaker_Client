@@ -2,9 +2,3 @@ body {
     background-color: rgb(35, 36, 38);
     color: whitesmoke;
 }
-
-#canvas {
-    border: 1px solid red;
-    width: 53vh;
-    height: 70vh;
-}

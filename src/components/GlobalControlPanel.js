@@ -1,9 +1,10 @@
 import React from 'react';
+import './styles/GlobalControlPanel.css';
 
 class GlobalControlPanel extends React.Component {
     render(){
         return (
-            <div style={{border: '1px solid green', height: '14vh'}}>GlobalControlPanel</div>
+            <div id="GlobalControlPanel">GlobalControlPanel</div>
         )
     }
 }
