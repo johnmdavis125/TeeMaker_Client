@@ -1,0 +1,7 @@
+canvas {
+    background-color: rgb(35, 36, 38);
+}
+
+#canvas {
+    border: 1px solid red;
+}
