@@ -2,8 +2,7 @@ import React from 'react';
 import HeaderMenu from './components/HeaderMenu';
 import GlobalControlPanel from './components/GlobalControlPanel';
 import ToolBar from './components/ToolBar';
-import CanvasClassVersion from './components/CanvasClassVersion'; 
-// import CanvasFunctionalVersion from './components/CanvasFunctionalVersion'; 
+import Canvas from './components/Canvas'; 
 import './components/styles/App.css';
 import LayersPanel from './components/LayersPanel';
 
@@ -24,7 +23,7 @@ class App extends React.Component {
                     </div>                  
                     <div className='column'>
                         <GlobalControlPanel />    
-                        <CanvasClassVersion />                        
+                        <Canvas />                        
                         <LayersPanel />
                     </div>                    
                     <div className='column'>

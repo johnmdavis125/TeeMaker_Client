@@ -1,7 +1,7 @@
 import React from 'react'; 
 import './styles/Canvas.css'; 
 
-class CanvasClassVersion extends React.Component {
+class Canvas extends React.Component {
     constructor(props){
         super(props)
         this.canvasRef = React.createRef(); 
@@ -24,7 +24,6 @@ class CanvasClassVersion extends React.Component {
             this.ctx.arc(x, y, 25, 0, Math.PI * 2); 
             this.ctx.fillStyle = `hsl(0,100%,50%)`; 
             this.ctx.fill();
-            console.log(this.state.painting); 
         }
     }
     render(){
@@ -40,4 +39,4 @@ class CanvasClassVersion extends React.Component {
     }
 }
 
-export default CanvasClassVersion; 
+export default Canvas; 
