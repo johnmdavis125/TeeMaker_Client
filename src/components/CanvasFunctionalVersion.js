@@ -4,7 +4,7 @@ import './styles/Canvas.css';
 
 let canvas = null;
 let ctx = null;
-const Canvas = () => {
+const CanvasFunctionalVersion = () => {
     const [painting, setPainting] = useState(false); 
     let canvasRef = useRef();
 
@@ -39,4 +39,4 @@ const Canvas = () => {
     )
 }
 
-export default Canvas; 
+export default CanvasFunctionalVersion; 
