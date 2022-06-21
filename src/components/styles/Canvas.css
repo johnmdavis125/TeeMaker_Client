@@ -1,7 +1,17 @@
-canvas {
-    background-color: rgb(35, 36, 38);
+#canvasContainer {
+    border: 1px solid gold;
+    height: 70vh;
+    min-height: 14vh; 
+    width: 53vh; 
+    position: relative; 
 }
 
-#canvas {
+.canvas {
+    background-color: rgb(35, 36, 38);
     border: 1px solid red;
+    /* height: 70vh;
+    min-height: 14vh; 
+    width: 53vh; */
+    position: absolute; 
+
 }
