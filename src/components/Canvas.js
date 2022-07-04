@@ -1,13 +1,13 @@
-import { DragGesture } from '@use-gesture/vanilla';
 import React from 'react'; 
+import { DragGesture } from '@use-gesture/vanilla';
 import './styles/Canvas.css'; 
 
 class Canvas extends React.Component {
     constructor(props){
         super(props)
+        this.state = {painting: false, pan: {x: 0, y: 0}}
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
-        this.state = {painting: false, pan: {x: 0, y: 0}}
         this.ctx = null;
     }
     componentDidMount() {
@@ -22,15 +22,19 @@ class Canvas extends React.Component {
         this.ctx.translate(-(translateOriginX), -(translateOriginY));
 
         const image = new Image(); 
-        image.src = './sizeTestSmall.png'; 
+        image.src = './sizeTestSmall.png';  
+        console.log(image); 
         image.onload = () => {
             this.ctx.drawImage(image,translateOriginX, translateOriginY); 
         }
 
         const el = document.getElementById('drag'); 
+        // const gesture = new DragGesture(el, ({ active, offset }) => {
+        //     bounds: {left: -500, right: 500, top: -500, bottom: 500},
+        //     {this.setState({pan: {x: offset[0],y: offset[1]}})} 
         const gesture = new DragGesture(el, ({ active, offset }) => {
             console.log(el, active, offset[0], offset[1]); 
-            this.setState({pan: {x: offset[0],y: offset[1]}}); 
+            this.setState({pan: {x: offset[0], y: offset[1]}});
         })
 
     }
@@ -46,7 +50,7 @@ class Canvas extends React.Component {
     }
     render(){
         return (
-            <div id="canvasContainer">
+            <div id="canvasContainer" style={{overflow: 'hidden'}}>
                 <canvas 
                     id="drag"
                     className='canvas'
@@ -56,6 +60,9 @@ class Canvas extends React.Component {
                     onMouseDown={() => this.setState({painting: true})} 
                     onMouseUp={() => this.setState({painting: false})}
                 />
+                <div id="drag" style={{border: '1px solid orange', height: '100px', width: '100px'}}>
+                    DIV
+                </div>
             </div>
         )
     }
