@@ -7,7 +7,6 @@ import './components/styles/App.css';
 import LayersPanel from './components/LayersPanel';
 
 class App extends React.Component {
-        
     render(){    
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>

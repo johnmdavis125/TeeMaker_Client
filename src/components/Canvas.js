@@ -5,7 +5,7 @@ import './styles/Canvas.css';
 class Canvas extends React.Component {
     constructor(props){
         super(props)
-        this.state = {painting: false, pan: {x: 0, y: 0}}
+        this.state = {painting: false, pan: {x: 0, y: 0}, zoomFactor: 1}
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
         this.ctx = null;
@@ -23,7 +23,6 @@ class Canvas extends React.Component {
 
         const image = new Image(); 
         image.src = './sizeTestSmall.png';  
-        console.log(image); 
         image.onload = () => {
             this.ctx.drawImage(image,translateOriginX, translateOriginY); 
         }
@@ -55,12 +54,12 @@ class Canvas extends React.Component {
                     id="drag"
                     className='canvas'
                     ref={this.canvasRef}
-                    style={{touchAction: 'none', left: this.state.pan.x, top: this.state.pan.y}}
+                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.state.zoomFactor})`}}
                     onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
                     onMouseDown={() => this.setState({painting: true})} 
                     onMouseUp={() => this.setState({painting: false})}
                 />
-                <div id="drag" style={{border: '1px solid orange', height: '100px', width: '100px'}}>
+                <div onClick={() => this.setState({zoomFactor: '0.5'})} style={{border: '1px solid orange', height: '100px', width: '100px'}}>
                     DIV
                 </div>
             </div>
