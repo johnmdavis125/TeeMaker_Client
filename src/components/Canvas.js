@@ -1,13 +1,15 @@
-import { DragGesture } from '@use-gesture/vanilla';
 import React from 'react'; 
+import { DragGesture } from '@use-gesture/vanilla';
 import './styles/Canvas.css'; 
 
 class Canvas extends React.Component {
     constructor(props){
         super(props)
+        // this.state = {painting: false, pan: {x: 0, y: 0}, zoomFactor: 1}
+        // this.state = {painting: false, pan: {x: 0, y: 0}}
+        this.state = {painting: false, pan: {x: 0, y: 0, zoomFactor: this.props.zoomFactor}}
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
-        this.state = {painting: false, pan: {x: 0, y: 0}}
         this.ctx = null;
     }
     componentDidMount() {
@@ -22,17 +24,27 @@ class Canvas extends React.Component {
         this.ctx.translate(-(translateOriginX), -(translateOriginY));
 
         const image = new Image(); 
-        image.src = './sizeTestSmall.png'; 
+        image.src = './sizeTestSmall.png';  
         image.onload = () => {
             this.ctx.drawImage(image,translateOriginX, translateOriginY); 
         }
 
         const el = document.getElementById('drag'); 
+        // const gesture = new DragGesture(el, ({ active, offset }) => {
+        //     bounds: {left: -500, right: 500, top: -500, bottom: 500},
+        //     {this.setState({pan: {x: offset[0],y: offset[1]}})} 
         const gesture = new DragGesture(el, ({ active, offset }) => {
             console.log(el, active, offset[0], offset[1]); 
-            this.setState({pan: {x: offset[0],y: offset[1]}}); 
+            this.setState({pan: {x: offset[0], y: offset[1]}});
         })
-
+    }
+    componentDidUpdate(prevProps){
+        console.log('call componentDidUpdate'); 
+        if (prevProps !== this.props){
+            console.log('props has been updated'); 
+        } else {
+            console.log('debug condition');
+        }
     }
     paint(x,y){
         if (this.state.painting){
@@ -46,16 +58,19 @@ class Canvas extends React.Component {
     }
     render(){
         return (
-            <div id="canvasContainer">
+            <div id="canvasContainer" style={{overflow: 'hidden'}}>
                 <canvas 
                     id="drag"
                     className='canvas'
                     ref={this.canvasRef}
-                    style={{touchAction: 'none', left: this.state.pan.x, top: this.state.pan.y}}
+                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.props.zoomFactor})`}}
                     onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
                     onMouseDown={() => this.setState({painting: true})} 
                     onMouseUp={() => this.setState({painting: false})}
                 />
+                <div onClick={() => this.setState({zoomFactor: '0.5'})} style={{border: '1px solid orange', height: '100px', width: '100px'}}>
+                    DIV
+                </div>
             </div>
         )
     }
