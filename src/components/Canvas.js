@@ -5,7 +5,9 @@ import './styles/Canvas.css';
 class Canvas extends React.Component {
     constructor(props){
         super(props)
-        this.state = {painting: false, pan: {x: 0, y: 0}, zoomFactor: 1}
+        // this.state = {painting: false, pan: {x: 0, y: 0}, zoomFactor: 1}
+        // this.state = {painting: false, pan: {x: 0, y: 0}}
+        this.state = {painting: false, pan: {x: 0, y: 0, zoomFactor: this.props.zoomFactor}}
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
         this.ctx = null;
@@ -35,7 +37,14 @@ class Canvas extends React.Component {
             console.log(el, active, offset[0], offset[1]); 
             this.setState({pan: {x: offset[0], y: offset[1]}});
         })
-
+    }
+    componentDidUpdate(prevProps){
+        console.log('call componentDidUpdate'); 
+        if (prevProps !== this.props){
+            console.log('props has been updated'); 
+        } else {
+            console.log('debug condition');
+        }
     }
     paint(x,y){
         if (this.state.painting){
@@ -54,7 +63,7 @@ class Canvas extends React.Component {
                     id="drag"
                     className='canvas'
                     ref={this.canvasRef}
-                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.state.zoomFactor})`}}
+                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.props.zoomFactor})`}}
                     onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
                     onMouseDown={() => this.setState({painting: true})} 
                     onMouseUp={() => this.setState({painting: false})}

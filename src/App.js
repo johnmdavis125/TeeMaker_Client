@@ -7,7 +7,18 @@ import './components/styles/App.css';
 import LayersPanel from './components/LayersPanel';
 
 class App extends React.Component {
+    constructor(){
+        super()
+        this.state = {zoomFactor: 1}
+    }
+
+    setZoomFactor = (zoomFactor) => {
+        console.log(zoomFactor); 
+        this.setState({zoomFactor: zoomFactor})
+    }
+    
     render(){    
+        console.log(this.state.zoomFactor); 
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>
                 <div style={{border: '1px solid blue'}}>
@@ -21,8 +32,11 @@ class App extends React.Component {
                         <ToolBar />
                     </div>                  
                     <div className='column'>
-                        <GlobalControlPanel />    
-                        <Canvas />                        
+                        <GlobalControlPanel
+                            zoomFactor={this.state.zoomFactor}    
+                            setZoomFactor={this.setZoomFactor}
+                        />
+                        <Canvas zoomFactor={this.state.zoomFactor}/>                        
                         <LayersPanel />
                     </div>                    
                     <div className='column'>
