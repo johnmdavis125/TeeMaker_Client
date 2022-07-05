@@ -13,12 +13,10 @@ class App extends React.Component {
     }
 
     setZoomFactor = (zoomFactor) => {
-        console.log(zoomFactor); 
         this.setState({zoomFactor: zoomFactor})
     }
     
     render(){    
-        console.log(this.state.zoomFactor); 
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>
                 <div style={{border: '1px solid blue'}}>
