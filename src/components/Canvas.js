@@ -7,10 +7,10 @@ class Canvas extends React.Component {
         super(props)
         this.state = {
             painting: false,
-            pan: {x: 0, y: 0, active: false,
-            zoomFactor: this.props.zoomFactor
+            pan: {x: 0, y: 0, active: false}
+            // zoomFactor: this.props.zoomFactor
             
-        }}
+        }
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
         this.ctx = null;
@@ -28,7 +28,7 @@ class Canvas extends React.Component {
         window.addEventListener('keydown', (e)=>{
             if (e.code === 'Space' && this.state.pan.active === false){
                 this.setState({painting: false});
-                this.setState({pan: {active: true}});
+                this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: true}});
                 console.log(e.code, 'bar down', this.state.painting); 
             }
             console.log(this.state.pan.active); 
@@ -60,7 +60,7 @@ class Canvas extends React.Component {
             // console.log(`paint here: ${x},${y}`); 
 
             console.log('paint'); 
-
+            console.log(this.props.zoomFactor); 
             this.ctx.beginPath(); 
             this.ctx.arc(x - this.state.pan.x, y - this.state.pan.y, 25, 0, Math.PI * 2); 
             this.ctx.fillStyle = `hsl(0,100%,50%)`; 
