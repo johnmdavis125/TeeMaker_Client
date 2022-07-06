@@ -1,15 +1,25 @@
 import React from 'react'; 
 
 class Dropdown extends React.Component {
-    // state = {};
-    
+    // componentDidMount(){
+    //     const dropDown = document.getElementById(this.props.btnTitle); 
+    //     console.log(dropDown); 
+    //     dropDown.addEventListener('click', ()=>{
+    //         dropDown.classList.add('is-active');
+    //     });
+    // }
+    saveAs(){
+
+        // console.log('hello'); 
+    }
+
     render(){
         const {btnTitle, options} = this.props;  
         
         return (
             <div>
-                <div className="dropdown">
-                {/* <div className="dropdown is-active"> */}
+                {/* <div className="dropdown" id={btnTitle}> */}
+                <div className="dropdown is-hoverable">
                     <div className="dropdown-trigger">
                         <button className="button is-small" aria-haspopup="true" aria-controls="dropdown-menu" style={{background: 'rgb(75,75,75)',color: 'rgb(200,200,200)'}}>
                         <span>{btnTitle}</span>
@@ -20,7 +30,7 @@ class Dropdown extends React.Component {
                     </div>
                     <div className="dropdown-menu" id="dropdown-menu" role="menu">
                         <div className="dropdown-content">
-                        <a href="#" className="dropdown-item" id="testItem">
+                        <a onClick={this.saveAs} className="dropdown-item" id="testItem">
                             {options[0]}
                         </a>
                         <a className="dropdown-item">

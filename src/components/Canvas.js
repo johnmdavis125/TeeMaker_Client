@@ -1,5 +1,6 @@
 import React from 'react'; 
 import { DragGesture } from '@use-gesture/vanilla';
+import exportAsImage from './Utils/exportAsImage';
 import './styles/Canvas.css'; 
 
 class Canvas extends React.Component {
@@ -89,22 +90,33 @@ class Canvas extends React.Component {
             this.setState({painting: true})
         }
     }
+    export = () => {
+        console.log('exporting canvas as Image'); 
+        this.props.setZoomFactor(1); 
+        requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
+        requestAnimationFrame(() => this.props.setZoomFactor(0.073611111111111)); 
+    }
+
     render(){
         
         const shiftX = -(((this.scaleFactor - 1) * 0.5) * this.width) + this.state.pan.x;
         const shiftY = -(((this.scaleFactor - 1) * 0.5) * this.height) + this.state.pan.y;
         
         return (
-            <div id="canvasContainer" style={{overflow: 'hidden'}}>
-                <canvas 
-                    id="drag"
-                    className='canvas'
-                    ref={this.canvasRef}
-                    style={{left: shiftX, top: shiftY, transform: `scale(${this.props.zoomFactor})`, touchAction: 'none'}}
-                    onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
-                    onMouseDown={this.brushDown} 
-                    onMouseUp={() => this.setState({painting: false})}
-                />
+            <div>
+                <div id="canvasContainer" style={{overflow: 'hidden'}}>
+                    <canvas 
+                        id="drag"
+                        className='canvas'
+                        ref={this.canvasRef}
+                        style={{left: shiftX, top: shiftY, transform: `scale(${this.props.zoomFactor})`, touchAction: 'none'}}
+                        onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
+                        onMouseDown={this.brushDown} 
+                        onMouseUp={() => this.setState({painting: false})}
+                    />
+                <button onClick={this.export} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button>
+                </div>
+                {/* <button onClick={() => exportAsImage(this.canvasRef.current, "testFile")} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button> */}
             </div>
         )
     }

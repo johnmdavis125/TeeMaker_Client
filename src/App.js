@@ -10,7 +10,7 @@ class App extends React.Component {
     constructor(){
         super()
         this.state = {zoomFactor: 0.073611111111111}
-        // this.state = {zoomFactor: 0.1}
+        // this.state = {zoomFactor: 0.2} // test only
     }
 
     setZoomFactor = (zoomFactor) => {
@@ -35,7 +35,10 @@ class App extends React.Component {
                             zoomFactor={this.state.zoomFactor}    
                             setZoomFactor={this.setZoomFactor}
                         />
-                        <Canvas zoomFactor={this.state.zoomFactor}/>                        
+                        <Canvas 
+                            zoomFactor={this.state.zoomFactor}
+                            setZoomFactor={this.setZoomFactor}    
+                        />                        
                         <LayersPanel />
                     </div>                    
                     <div className='column'>
