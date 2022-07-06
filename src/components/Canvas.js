@@ -9,21 +9,33 @@ class Canvas extends React.Component {
             painting: false,
             pan: {x: 0, y: 0, active: false}
             // zoomFactor: this.props.zoomFactor
-            
         }
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
         this.ctx = null;
+        this.width = 530;
+        this.height = 697;
+        this.scaleFactor = 13.584905660377358;
+        this.scaledWidth = 530 * this.scaleFactor;
+        this.scaledHeight = 697 * this.scaleFactor;
+
     }
     componentDidMount() {
         // Configure Canvas
         let canvas = this.canvasRef.current; 
         this.ctx = canvas.getContext('2d'); 
-        canvas.width = window.innerHeight * 0.53; 
-        canvas.height = window.innerHeight * 0.70;
-        const translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2)) + this.state.pan.x;
-        const translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))) + this.state.pan.y; 
-        this.ctx.translate(-(translateOriginX), -(translateOriginY));
+        // canvas.width = '530';
+        // canvas.height = '697';
+        canvas.width = this.scaledWidth;
+        canvas.height = this.scaledHeight;
+        // canvas.width = window.innerHeight * 0.53; 
+        // canvas.height = window.innerHeight * 0.70;
+
+        // const translateOriginX = (window.innerWidth / 2) - (canvas.width / 2);
+        // const translateOriginY = ((window.innerHeight / 2) + 45) - (canvas.height / 2); 
+        const translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
+        const translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))); 
+        this.ctx.translate(-(translateOriginX),-(translateOriginY));
         
         window.addEventListener('keydown', (e)=>{
             if (e.code === 'Space' && this.state.pan.active === false){
@@ -42,9 +54,9 @@ class Canvas extends React.Component {
         })
         // Canvas Image
         const image = new Image(); 
-        image.src = './sizeTestSmall.png';  
+        image.src = './SizeTest7200x9600.png';  
         image.onload = () => {
-            this.ctx.drawImage(image,translateOriginX, translateOriginY); 
+            this.ctx.drawImage(image,translateOriginX,translateOriginY); 
         }
         
         // Pan
@@ -57,12 +69,17 @@ class Canvas extends React.Component {
     }
     paint(x,y){
         if (this.state.painting){
-            // console.log(`paint here: ${x},${y}`); 
-
-            console.log('paint'); 
+            console.log(`paint here: ${x},${y}`); 
+            console.log(`paint here: ${x * this.scaleFactor},${y * this.scaleFactor}`); 
+            console.log('paint');
             console.log(this.props.zoomFactor); 
+        
+            // const tempX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
+            // const tempY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2)));
+            // this.ctx.translate((tempX),(tempY));
+
             this.ctx.beginPath(); 
-            this.ctx.arc(x - this.state.pan.x, y - this.state.pan.y, 25, 0, Math.PI * 2); 
+            this.ctx.arc(((x * this.scaleFactor)) - this.state.pan.x, ((y * this.scaleFactor)) - this.state.pan.y, 25 * this.scaleFactor, 0, Math.PI * 2); 
             this.ctx.fillStyle = `hsl(0,100%,50%)`; 
             this.ctx.fill();
         }
@@ -73,13 +90,17 @@ class Canvas extends React.Component {
         }
     }
     render(){
+        
+        const shiftX = -(((this.scaleFactor - 1) * 0.5) * this.width) + this.state.pan.x;
+        const shiftY = -(((this.scaleFactor - 1) * 0.5) * this.height) + this.state.pan.y;
+        
         return (
             <div id="canvasContainer" style={{overflow: 'hidden'}}>
                 <canvas 
                     id="drag"
                     className='canvas'
                     ref={this.canvasRef}
-                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.props.zoomFactor})`, touchAction: 'none'}}
+                    style={{left: shiftX, top: shiftY, transform: `scale(${this.props.zoomFactor})`, touchAction: 'none'}}
                     onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
                     onMouseDown={this.brushDown} 
                     onMouseUp={() => this.setState({painting: false})}

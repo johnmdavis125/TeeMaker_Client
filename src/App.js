@@ -9,7 +9,8 @@ import LayersPanel from './components/LayersPanel';
 class App extends React.Component {
     constructor(){
         super()
-        this.state = {zoomFactor: 1}
+        this.state = {zoomFactor: 0.073611111111111}
+        // this.state = {zoomFactor: 0.1}
     }
 
     setZoomFactor = (zoomFactor) => {
