@@ -77,9 +77,9 @@ class Canvas extends React.Component {
             // const tempX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
             // const tempY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2)));
             // this.ctx.translate((tempX),(tempY));
-
+            console.log(this.state.pan.x, this.state.pan.y); 
             this.ctx.beginPath(); 
-            this.ctx.arc(((x * this.scaleFactor)) - this.state.pan.x, ((y * this.scaleFactor)) - this.state.pan.y, 25 * this.scaleFactor, 0, Math.PI * 2); 
+            this.ctx.arc(((x * this.scaleFactor) - 2950) - (this.state.pan.x * this.scaleFactor), ((y * this.scaleFactor) - 2150) - (this.state.pan.y * this.scaleFactor), 25 * this.scaleFactor, 0, Math.PI * 2); 
             this.ctx.fillStyle = `hsl(0,100%,50%)`; 
             this.ctx.fill();
         }
