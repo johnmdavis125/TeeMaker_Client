@@ -9,16 +9,15 @@ import LayersPanel from './components/LayersPanel';
 class App extends React.Component {
     constructor(){
         super()
-        this.state = {zoomFactor: 1}
+        this.state = {zoomFactor: 0.073611111111111}
+        // this.state = {zoomFactor: 0.2} // test only
     }
 
     setZoomFactor = (zoomFactor) => {
-        console.log(zoomFactor); 
         this.setState({zoomFactor: zoomFactor})
     }
     
     render(){    
-        console.log(this.state.zoomFactor); 
         return(
             <div className="container is-fullhd" style={{border: '1px solid gold'}}>
                 <div style={{border: '1px solid blue'}}>
@@ -36,7 +35,10 @@ class App extends React.Component {
                             zoomFactor={this.state.zoomFactor}    
                             setZoomFactor={this.setZoomFactor}
                         />
-                        <Canvas zoomFactor={this.state.zoomFactor}/>                        
+                        <Canvas 
+                            zoomFactor={this.state.zoomFactor}
+                            setZoomFactor={this.setZoomFactor}    
+                        />                        
                         <LayersPanel />
                     </div>                    
                     <div className='column'>

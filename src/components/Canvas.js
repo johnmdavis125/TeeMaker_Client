@@ -1,76 +1,122 @@
 import React from 'react'; 
 import { DragGesture } from '@use-gesture/vanilla';
+import exportAsImage from './Utils/exportAsImage';
 import './styles/Canvas.css'; 
 
 class Canvas extends React.Component {
     constructor(props){
         super(props)
-        // this.state = {painting: false, pan: {x: 0, y: 0}, zoomFactor: 1}
-        // this.state = {painting: false, pan: {x: 0, y: 0}}
-        this.state = {painting: false, pan: {x: 0, y: 0, zoomFactor: this.props.zoomFactor}}
+        this.state = {
+            painting: false,
+            pan: {x: 0, y: 0, active: false}
+            // zoomFactor: this.props.zoomFactor
+        }
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
         this.ctx = null;
+        this.width = 530;
+        this.height = 697;
+        this.scaleFactor = 13.584905660377358;
+        this.scaledWidth = 530 * this.scaleFactor;
+        this.scaledHeight = 697 * this.scaleFactor;
+
     }
     componentDidMount() {
+        // Configure Canvas
         let canvas = this.canvasRef.current; 
         this.ctx = canvas.getContext('2d'); 
+        // canvas.width = '530';
+        // canvas.height = '697';
+        canvas.width = this.scaledWidth;
+        canvas.height = this.scaledHeight;
+        // canvas.width = window.innerHeight * 0.53; 
+        // canvas.height = window.innerHeight * 0.70;
 
-        canvas.width = window.innerHeight * 0.53; 
-        canvas.height = window.innerHeight * 0.70;
-
-        const translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2)) + this.state.pan.x;
-        const translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))) + this.state.pan.y; 
-        this.ctx.translate(-(translateOriginX), -(translateOriginY));
-
-        const image = new Image(); 
-        image.src = './sizeTestSmall.png';  
-        image.onload = () => {
-            this.ctx.drawImage(image,translateOriginX, translateOriginY); 
-        }
-
-        const el = document.getElementById('drag'); 
-        // const gesture = new DragGesture(el, ({ active, offset }) => {
-        //     bounds: {left: -500, right: 500, top: -500, bottom: 500},
-        //     {this.setState({pan: {x: offset[0],y: offset[1]}})} 
-        const gesture = new DragGesture(el, ({ active, offset }) => {
-            console.log(el, active, offset[0], offset[1]); 
-            this.setState({pan: {x: offset[0], y: offset[1]}});
+        // const translateOriginX = (window.innerWidth / 2) - (canvas.width / 2);
+        // const translateOriginY = ((window.innerHeight / 2) + 45) - (canvas.height / 2); 
+        const translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
+        const translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))); 
+        this.ctx.translate(-(translateOriginX),-(translateOriginY));
+        
+        window.addEventListener('keydown', (e)=>{
+            if (e.code === 'Space' && this.state.pan.active === false){
+                this.setState({painting: false});
+                this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: true}});
+                console.log(e.code, 'bar down', this.state.painting); 
+            }
+            console.log(this.state.pan.active); 
+        });
+        window.addEventListener('keyup', (e)=>{
+            if (e.code === 'Space'){
+                this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: false}})
+                console.log(e.code, 'bar up', this.state.painting);
+            }
+            console.log(this.state.pan.active); 
         })
-    }
-    componentDidUpdate(prevProps){
-        console.log('call componentDidUpdate'); 
-        if (prevProps !== this.props){
-            console.log('props has been updated'); 
-        } else {
-            console.log('debug condition');
+        // Canvas Image
+        const image = new Image(); 
+        image.src = './SizeTest7200x9600.png';  
+        image.onload = () => {
+            this.ctx.drawImage(image,translateOriginX,translateOriginY); 
         }
+        
+        // Pan
+        const el = document.getElementById('drag'); 
+        const gesture = new DragGesture(el, ({ active, offset }) => {
+            if (this.state.pan.active){
+                this.setState({pan: {x: offset[0], y: offset[1], active: true}});
+            }
+        })
     }
     paint(x,y){
         if (this.state.painting){
-            // console.log(`paint here: ${x},${y}`); 
-            console.log('paint'); 
-            // this.ctx.beginPath(); 
-            // this.ctx.arc(x, y, 25, 0, Math.PI * 2); 
-            // this.ctx.fillStyle = `hsl(0,100%,50%)`; 
-            // this.ctx.fill();
+            console.log(`paint here: ${x},${y}`); 
+            console.log(`paint here: ${x * this.scaleFactor},${y * this.scaleFactor}`); 
+            console.log('paint');
+            console.log(this.props.zoomFactor); 
+        
+            // const tempX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
+            // const tempY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2)));
+            // this.ctx.translate((tempX),(tempY));
+            console.log(this.state.pan.x, this.state.pan.y); 
+            this.ctx.beginPath(); 
+            this.ctx.arc(((x * this.scaleFactor) - 2950) - (this.state.pan.x * this.scaleFactor), ((y * this.scaleFactor) - 2150) - (this.state.pan.y * this.scaleFactor), 25 * this.scaleFactor, 0, Math.PI * 2); 
+            this.ctx.fillStyle = `hsl(0,100%,50%)`; 
+            this.ctx.fill();
         }
     }
+    brushDown = () => {
+        if (this.state.pan.active === false){
+            this.setState({painting: true})
+        }
+    }
+    export = () => {
+        console.log('exporting canvas as Image'); 
+        this.props.setZoomFactor(1); 
+        requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
+        requestAnimationFrame(() => this.props.setZoomFactor(0.073611111111111)); 
+    }
+
     render(){
+        
+        const shiftX = -(((this.scaleFactor - 1) * 0.5) * this.width) + this.state.pan.x;
+        const shiftY = -(((this.scaleFactor - 1) * 0.5) * this.height) + this.state.pan.y;
+        
         return (
-            <div id="canvasContainer" style={{overflow: 'hidden'}}>
-                <canvas 
-                    id="drag"
-                    className='canvas'
-                    ref={this.canvasRef}
-                    style={{left: this.state.pan.x, top: this.state.pan.y, transform: `scale(${this.props.zoomFactor})`}}
-                    onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
-                    onMouseDown={() => this.setState({painting: true})} 
-                    onMouseUp={() => this.setState({painting: false})}
-                />
-                <div onClick={() => this.setState({zoomFactor: '0.5'})} style={{border: '1px solid orange', height: '100px', width: '100px'}}>
-                    DIV
+            <div>
+                <div id="canvasContainer" style={{overflow: 'hidden'}}>
+                    <canvas 
+                        id="drag"
+                        className='canvas'
+                        ref={this.canvasRef}
+                        style={{left: shiftX, top: shiftY, transform: `scale(${this.props.zoomFactor})`, touchAction: 'none'}}
+                        onMouseMove={(e) => this.paint(e.nativeEvent.clientX,e.nativeEvent.clientY)}
+                        onMouseDown={this.brushDown} 
+                        onMouseUp={() => this.setState({painting: false})}
+                    />
+                <button onClick={this.export} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button>
                 </div>
+                {/* <button onClick={() => exportAsImage(this.canvasRef.current, "testFile")} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button> */}
             </div>
         )
     }
