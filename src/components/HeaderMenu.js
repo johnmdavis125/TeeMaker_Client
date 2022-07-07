@@ -2,24 +2,12 @@ import React from 'react';
 import DropDown from './Dropdown'; 
 
 class HeaderMenu extends React.Component {
-    constructor(){
-        super()
-    }
-    
-    // componentDidMount(){
-    //     const dropDown = document.getElementById('FileMenu'); 
-    //     // dropDown.addEventListener('click', () => {
-    //     //     console.log('clicked'); 
-    //     // })
-    //     console.log(dropDown); 
-    // }
-
     render(){
         return (
             <div style={{display: 'flex'}}>
                 <DropDown id="FileMenu" className="dropDown"
                     btnTitle={'File'}
-                    options={['Save As', 'option2', 'option3']}
+                    options={['Save As', 'Import File', 'option3']}
                 /> 
                 <DropDown className="Menu2"
                     btnTitle={'title2'}
