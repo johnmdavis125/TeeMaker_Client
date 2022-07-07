@@ -62,22 +62,80 @@ class Canvas extends React.Component {
         // Build Grid Points
         let gridPoints = []; 
         let boxCount = 0; 
-        const gridBoxWidth = this.scaledWidth / 12; 
-        const gridBoxHeight = this.scaledHeight / 16; 
+        const gridBoxWidth = (this.scaledWidth - 500) / 12; 
+        const gridBoxHeight = (this.scaledHeight - 500) / 16; 
         for (let i = 0; i < 12; i++){
             for (let j = 0; j < 16; j++){
                 gridPoints.push([i * gridBoxWidth, j * gridBoxHeight]); 
                 boxCount += 1;
             }
         }
-        console.log(`boxCount: ${boxCount}`); 
+        // console.log(`boxCount: ${boxCount}`); 
+        let availablePoints = gridPoints; 
+
+        const wordArr = [
+            'MAP',
+            'JOIN', 
+            'SPLIT',
+            'SLICE',
+            'REDUCE',
+            'TOSTRING',
+            'LENGTH', 
+            'POP',
+            'PUSH',
+            'SHIFT'
+        ]; 
+
+        this.ctx.font = '220px serif';
+        this.ctx.fillStyle = 'green';  
+        this.ctx.textAlign = 'center'; 
+        const deleteMeDrawFunction = (startPos, splitWord) => {
+            for (let i = 0; i < splitWord.length; i++){
+                this.ctx.fillText(splitWord[i], startPos[0] + (gridBoxWidth * i), startPos[1]);
+            } 
+        }
+
+        for (let i = 0; i < wordArr.length; i++){
+            // console.log(wordArr[i]); 
+
+
+            // pick word direction
+                // For now, assume all go left to right
+            
+                // pick random row & column
+            let randRow = Math.floor((Math.random() * 12) + 1); 
+            let randCol = Math.floor((Math.random() * 16) + 1);
+            let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
+            // console.log(startPos); 
+            let splitWord = wordArr[i].split('');  
+            
+            // Shift Left
+            while (startPos[0] + (splitWord.length * gridBoxWidth) > (this.scaledWidth - gridBoxWidth)){
+                console.log(`${startPos[0] + (splitWord.length * gridBoxWidth)}` > `${(this.scaledWidth - gridBoxWidth)}`); 
+                console.log('shifting word left'); 
+                startPos -= gridBoxWidth;
+            }
+            
+            
+            // if (charLocation not available in availablePoints){
+                //      select new row  
+                // }
+                
+                // if (numRows attempted == numRows total){
+                    //      switch word direction => run loop again
+                    // }
+                
+                deleteMeDrawFunction(startPos, splitWord); 
+        }
 
         // Draw Text Test
-        this.ctx.font = '248px serif';
-        this.ctx.fillStyle = 'white';  
-        for (let i = 0; i < gridPoints.length; i++){
-            this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth / 2), gridPoints[i][1] + (gridBoxHeight));
-        }
+            // this.ctx.font = '220px serif';
+            // this.ctx.fillStyle = 'white';  
+            // this.ctx.textAlign = 'center'; 
+            // for (let i = 0; i < gridPoints.length; i++){
+            //     this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
+            // }
+        
     }
     paint(x,y){
         if (this.state.painting){
