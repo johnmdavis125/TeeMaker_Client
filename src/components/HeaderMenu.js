@@ -9,7 +9,7 @@ class HeaderMenu extends React.Component {
                     btnTitle={'File'}
                     options={['Save As', 'Import File', 'option3']}
                 /> 
-                <DropDown className="Menu2"
+                {/* <DropDown className="Menu2"
                     btnTitle={'title2'}
                     options={['option1', 'option2', 'option3']}
                 /> 
@@ -20,7 +20,7 @@ class HeaderMenu extends React.Component {
                 <DropDown className="Menu4"
                     btnTitle={'title4'}
                     options={['option1', 'option2', 'option3']}
-                /> 
+                />  */}
             </div>
         )
     }

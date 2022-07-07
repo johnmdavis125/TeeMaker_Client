@@ -9,7 +9,6 @@ class Canvas extends React.Component {
         this.state = {
             painting: false,
             pan: {x: 0, y: 0, active: false}
-            // zoomFactor: this.props.zoomFactor
         }
         this.canvasRef = React.createRef(); 
         this.canvasContainerRef = React.createRef(); 
@@ -22,18 +21,11 @@ class Canvas extends React.Component {
 
     }
     componentDidMount() {
-        // Configure Canvas
         let canvas = this.canvasRef.current; 
         this.ctx = canvas.getContext('2d'); 
-        // canvas.width = '530';
-        // canvas.height = '697';
         canvas.width = this.scaledWidth;
         canvas.height = this.scaledHeight;
-        // canvas.width = window.innerHeight * 0.53; 
-        // canvas.height = window.innerHeight * 0.70;
 
-        // const translateOriginX = (window.innerWidth / 2) - (canvas.width / 2);
-        // const translateOriginY = ((window.innerHeight / 2) + 45) - (canvas.height / 2); 
         const translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
         const translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))); 
         this.ctx.translate(-(translateOriginX),-(translateOriginY));
@@ -56,9 +48,9 @@ class Canvas extends React.Component {
         // Canvas Image
         const image = new Image(); 
         image.src = './SizeTest7200x9600.png';  
-        image.onload = () => {
-            this.ctx.drawImage(image,translateOriginX,translateOriginY); 
-        }
+        // image.onload = () => {
+        //     this.ctx.drawImage(image,translateOriginX,translateOriginY); 
+        // }
         
         // Pan
         const el = document.getElementById('drag'); 
@@ -67,6 +59,25 @@ class Canvas extends React.Component {
                 this.setState({pan: {x: offset[0], y: offset[1], active: true}});
             }
         })
+        // Build Grid Points
+        let gridPoints = []; 
+        let boxCount = 0; 
+        const gridBoxWidth = this.scaledWidth / 12; 
+        const gridBoxHeight = this.scaledHeight / 16; 
+        for (let i = 0; i < 12; i++){
+            for (let j = 0; j < 16; j++){
+                gridPoints.push([i * gridBoxWidth, j * gridBoxHeight]); 
+                boxCount += 1;
+            }
+        }
+        console.log(`boxCount: ${boxCount}`); 
+
+        // Draw Text Test
+        this.ctx.font = '248px serif';
+        this.ctx.fillStyle = 'white';  
+        for (let i = 0; i < gridPoints.length; i++){
+            this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth / 2), gridPoints[i][1] + (gridBoxHeight));
+        }
     }
     paint(x,y){
         if (this.state.painting){
@@ -74,10 +85,6 @@ class Canvas extends React.Component {
             console.log(`paint here: ${x * this.scaleFactor},${y * this.scaleFactor}`); 
             console.log('paint');
             console.log(this.props.zoomFactor); 
-        
-            // const tempX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
-            // const tempY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2)));
-            // this.ctx.translate((tempX),(tempY));
             console.log(this.state.pan.x, this.state.pan.y); 
             this.ctx.beginPath(); 
             this.ctx.arc(((x * this.scaleFactor) - 2550) - (this.state.pan.x * this.scaleFactor), ((y * this.scaleFactor) - 2150) - (this.state.pan.y * this.scaleFactor), 25 * this.scaleFactor, 0, Math.PI * 2); 
@@ -116,7 +123,6 @@ class Canvas extends React.Component {
                     />
                 <button onClick={this.export} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button>
                 </div>
-                {/* <button onClick={() => exportAsImage(this.canvasRef.current, "testFile")} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button> */}
             </div>
         )
     }
