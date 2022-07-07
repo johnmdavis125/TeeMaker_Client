@@ -3,11 +3,18 @@ import React from 'react';
 class Dropdown extends React.Component {
     constructor(){
         super()
-        this.state = {file: {}};
+        this.state = {file: {}, array: []};
         this.fileReader = new FileReader(); 
     } 
     saveAs(){
-        console.log('hello'); 
+        console.log('saveAs'); 
+    }
+    csvFileToArray = (string) => {
+        const arr = string.split('\n');
+        for (let i = 0; i < arr.length; i++){
+            console.log(arr[i]); 
+        }
+        this.setState({array: arr}); 
     }
     handleChange = (e) => {
         console.log('handle change'); 
@@ -22,15 +29,16 @@ class Dropdown extends React.Component {
             console.log('file exists');
             this.fileReader.readAsText(this.state.file); 
 
-            this.fileReader.onload = function(event){
+            this.fileReader.onload = (event) => {
                 const result = event.target.result;
                 console.log(`result: ${result}`); 
+                this.csvFileToArray(result); 
             }    
         }
     }
     render(){
         const {btnTitle, options} = this.props;  
-        
+        console.log(this.state.array); 
         return (
             <div>
                 <div className="dropdown is-hoverable">
@@ -51,7 +59,7 @@ class Dropdown extends React.Component {
                         <form className='dropdown-item'>
                             <input
                                 type={"file"}
-                                accept={".png"}
+                                accept={".csv"}
                                 onChange={this.handleChange}
                             />
                             <button onClick={(e) => this.handleSubmit(e)}>
@@ -69,6 +77,7 @@ class Dropdown extends React.Component {
                         <a href="#" className="dropdown-item">
                             With a divider
                         </a>
+                        {/* <div>{this.state.array}</div> */}
                         </div>
                     </div>
                 </div>
