@@ -89,20 +89,32 @@ class Canvas extends React.Component {
         this.ctx.font = '220px serif';
         this.ctx.fillStyle = 'green';  
         this.ctx.textAlign = 'center'; 
-        const deleteMeDrawFunction = (startPos, splitWord) => {
+        const drawKeyWords = (startPos, splitWord) => {
             for (let i = 0; i < splitWord.length; i++){
-                this.ctx.fillText(splitWord[i], startPos[0] + (gridBoxWidth * i), startPos[1]);
+                this.ctx.fillText(splitWord[i], startPos[0] + (gridBoxWidth * i), startPos[1] + (gridBoxHeight * 0.4));
+                console.log(splitWord[i], (startPos[0] + (gridBoxWidth * i)), startPos[1])
             } 
+            // currently printout out x position relative to startPos[0]
+            // might need to convert to absolute x value -> which is why some points aren't matching up
+            // might also be because of manual y adjustment of whole grid (added 0.4 of gridBoxHeight) -> double check that's not the issue
         }
+    //   // Draw Text Test
+    //   this.ctx.font = '220px serif';
+    //   this.ctx.fillStyle = 'white';  
+    //   this.ctx.textAlign = 'center'; 
+    //   for (let i = 0; i < gridPoints.length; i++){
+    //       this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
+    //   }
+
+
 
         for (let i = 0; i < wordArr.length; i++){
-            // console.log(wordArr[i]); 
-
-
-            // pick word direction
-                // For now, assume all go left to right
             
-                // pick random row & column
+            
+            // pick word direction
+            // For now, assume all go left to right
+            
+            // pick random row & column
             let randRow = Math.floor((Math.random() * 12) + 1); 
             let randCol = Math.floor((Math.random() * 16) + 1);
             let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
@@ -112,30 +124,97 @@ class Canvas extends React.Component {
             // Shift Left
             while (startPos[0] + (splitWord.length * gridBoxWidth) > (this.scaledWidth - gridBoxWidth)){
                 console.log(`${startPos[0] + (splitWord.length * gridBoxWidth)}` > `${(this.scaledWidth - gridBoxWidth)}`); 
+                console.log(wordArr[i]); 
                 console.log('shifting word left'); 
-                startPos -= gridBoxWidth;
+                startPos[0] -= gridBoxWidth;
             }
-            
-            
-            // if (charLocation not available in availablePoints){
-                //      select new row  
-                // }
+            // Shift Down
+                // availablePoints
+                // loop through each point for potential word
+                    // Count + 1 if point is available
+                    // if numPoints === word.length
+                    // draw it & remove points from available points array
+            let splitWordPoints = []; 
+            let pointToAdd = [startPos[0],startPos[1]]; 
+            for (let i = 0; i < splitWord.length; i++){
+                // splitWordPoints.push([startPos[0], startPos[1]]); 
+                // startPos[0] += gridBoxWidth;
+                splitWordPoints.push([pointToAdd[0],pointToAdd[1]]); 
+                pointToAdd[0] += gridBoxWidth;
+            }; 
+            console.log(availablePoints); 
+            console.log(splitWordPoints); 
+            console.log(splitWordPoints.length); 
+
+            let totalNoMatchPointCount = 0; 
+            const checkIfArrayContainsPoint = (availablePoints, splitWordPoints) => {
                 
-                // if (numRows attempted == numRows total){
-                    //      switch word direction => run loop again
-                    // }
+                let pointIsAvailable = null;
+                for (let i = 0; i < splitWordPoints.length; i++){
+                    let singlePointNoMatchCount = 0; 
+                    availablePoints.forEach(el => {
+                        if (el[0] !== splitWordPoints[i][0] || el[1] !== splitWordPoints[i][1]){
+                            singlePointNoMatchCount ++; 
+                        }
+                        console.log(singlePointNoMatchCount); // if === 192, point is not available
+                        if (singlePointNoMatchCount === availablePoints.length){
+                            return pointIsAvailable = false;
+                        } else {
+                            return pointIsAvailable = true; 
+                        }
+                    });
+                    if (pointIsAvailable === false){
+                        totalNoMatchPointCount++;
+                    }
+                }
+            }
+            checkIfArrayContainsPoint(availablePoints, splitWordPoints); 
+
+            if (totalNoMatchPointCount === splitWordPoints.length){
+                // then call write the word!
+                console.log('word must be moved'); 
+                // delete all points from available points
                 
-                deleteMeDrawFunction(startPos, splitWord); 
+                // iterate loop
+            } else {
+                console.log('draw word in current position'); 
+                // add to iteration tally
+                // if tally > numRows, exit loop (switch word direction)
+                // select new row
+            }
+            drawKeyWords(startPos, splitWord); 
+                
         }
 
         // Draw Text Test
-            // this.ctx.font = '220px serif';
-            // this.ctx.fillStyle = 'white';  
-            // this.ctx.textAlign = 'center'; 
-            // for (let i = 0; i < gridPoints.length; i++){
-            //     this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
-            // }
+            this.ctx.font = '220px serif';
+            this.ctx.fillStyle = 'rgba(255,255,255,0.1';  
+            this.ctx.textAlign = 'center'; 
+            for (let i = 0; i < gridPoints.length; i++){
+                this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
+            }
         
+
+        // const testArr = [[1,0],[2,4],[2,1],[2,5]]; 
+        // const point = [2,5]
+        // let arrContainsPoint = null;
+        // const checkIfArrayContainsPoint = (testArr, point) => {
+        //     let noMatchCount = 0; 
+        //     testArr.forEach(el => {
+        //         if (el[0] !== point[0] || el[1] !== point[1]){
+        //             noMatchCount ++; 
+        //         }
+        //         console.log(noMatchCount); 
+        //         if (noMatchCount === testArr.length){
+        //             return arrContainsPoint = false; 
+        //         } else {
+        //             return arrContainsPoint = true; 
+        //         }
+        //     });
+        // }
+        // checkIfArrayContainsPoint(testArr, point); 
+        // console.log(arrContainsPoint); 
+
     }
     paint(x,y){
         if (this.state.painting){
