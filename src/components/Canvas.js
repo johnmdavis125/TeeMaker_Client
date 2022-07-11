@@ -59,18 +59,34 @@ class Canvas extends React.Component {
                 this.setState({pan: {x: offset[0], y: offset[1], active: true}});
             }
         })
+        
         // Build Grid Points
         let gridPoints = []; 
         let boxCount = 0; 
-        const gridBoxWidth = (this.scaledWidth - 500) / 12; 
-        const gridBoxHeight = (this.scaledHeight - 500) / 16; 
+        const gridBoxWidth = Math.floor((this.scaledWidth - 250) / 12); 
+        const gridBoxHeight = Math.floor((this.scaledHeight - 400) / 16); 
         for (let i = 0; i < 12; i++){
-            for (let j = 0; j < 16; j++){
-                gridPoints.push([i * gridBoxWidth, j * gridBoxHeight]); 
+            for (let j = 0; j < 17; j++){
+                gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
                 boxCount += 1;
             }
         }
-        // console.log(`boxCount: ${boxCount}`); 
+
+        this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
+        this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
+        this.ctx.lineWidth = '20';
+        for (let i = 0; i < 13; i++){
+            this.ctx.moveTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),gridBoxHeight - (gridBoxHeight / 2)); 
+
+            this.ctx.lineTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),(gridBoxHeight - (gridBoxHeight / 2) + (gridBoxHeight * 16))); 
+        }
+
+        // for (let i = 0; i < 17; i++){
+        //     this.ctx.moveTo((gridBoxHeight - (gridBoxHeight / 2) + gridBoxHeight * i))
+        // }
+
+        this.ctx.stroke(); 
+
         let availablePoints = gridPoints; 
 
         const wordArr = [
@@ -89,74 +105,54 @@ class Canvas extends React.Component {
         this.ctx.font = '220px serif';
         this.ctx.fillStyle = 'green';  
         this.ctx.textAlign = 'center'; 
-        const drawKeyWords = (startPos, splitWord) => {
+        const drawKeyWords = (splitWord, splitWordPoints) => {
             for (let i = 0; i < splitWord.length; i++){
-                this.ctx.fillText(splitWord[i], startPos[0] + (gridBoxWidth * i), startPos[1] + (gridBoxHeight * 0.4));
-                console.log(splitWord[i], (startPos[0] + (gridBoxWidth * i)), startPos[1])
+                this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                // this.ctx.fillText(Math.floor(splitWordPoints[i][0]), splitWordPoints[i][0], splitWordPoints[i][1]);
             } 
-            // currently printout out x position relative to startPos[0]
-            // might need to convert to absolute x value -> which is why some points aren't matching up
-            // might also be because of manual y adjustment of whole grid (added 0.4 of gridBoxHeight) -> double check that's not the issue
-        }
-    //   // Draw Text Test
-    //   this.ctx.font = '220px serif';
-    //   this.ctx.fillStyle = 'white';  
-    //   this.ctx.textAlign = 'center'; 
-    //   for (let i = 0; i < gridPoints.length; i++){
-    //       this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
-    //   }
-
-
+        } 
 
         for (let i = 0; i < wordArr.length; i++){
-            
-            
-            // pick word direction
-            // For now, assume all go left to right
-            
+                        
             // pick random row & column
             let randRow = Math.floor((Math.random() * 12) + 1); 
             let randCol = Math.floor((Math.random() * 16) + 1);
             let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
-            // console.log(startPos); 
+            console.log(`${wordArr[i]} startPos: ${startPos}`); 
             let splitWord = wordArr[i].split('');  
             
             // Shift Left
-            while (startPos[0] + (splitWord.length * gridBoxWidth) > (this.scaledWidth - gridBoxWidth)){
-                console.log(`${startPos[0] + (splitWord.length * gridBoxWidth)}` > `${(this.scaledWidth - gridBoxWidth)}`); 
-                console.log(wordArr[i]); 
-                console.log('shifting word left'); 
-                startPos[0] -= gridBoxWidth;
+            let wordEndPosition = null;
+            for (let i = 0; i < splitWord.length; i++){                
+                wordEndPosition = startPos[0] + ((splitWord.length - 1)* gridBoxWidth); 
+                if (wordEndPosition > (gridBoxWidth * 12)){
+                    console.log(`${wordEndPosition} > ${gridBoxWidth * 12}`); 
+                    startPos[0] -= gridBoxWidth;
+                    console.log(`shifting ${splitWord.join('')} left to x: ${startPos[0]}`); 
+                }
+            
             }
-            // Shift Down
-                // availablePoints
-                // loop through each point for potential word
-                    // Count + 1 if point is available
-                    // if numPoints === word.length
-                    // draw it & remove points from available points array
+        
             let splitWordPoints = []; 
-            let pointToAdd = [startPos[0],startPos[1]]; 
             for (let i = 0; i < splitWord.length; i++){
-                // splitWordPoints.push([startPos[0], startPos[1]]); 
-                // startPos[0] += gridBoxWidth;
-                splitWordPoints.push([pointToAdd[0],pointToAdd[1]]); 
-                pointToAdd[0] += gridBoxWidth;
+                splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), startPos[1]]); 
             }; 
             console.log(availablePoints); 
             console.log(splitWordPoints); 
             console.log(splitWordPoints.length); 
 
             let totalNoMatchPointCount = 0; 
-            const checkIfArrayContainsPoint = (availablePoints, splitWordPoints) => {
-                
+            const checkIfPointsAvailable = (availablePoints, splitWordPoints) => {
                 let pointIsAvailable = null;
                 for (let i = 0; i < splitWordPoints.length; i++){
                     let singlePointNoMatchCount = 0; 
                     availablePoints.forEach(el => {
                         if (el[0] !== splitWordPoints[i][0] || el[1] !== splitWordPoints[i][1]){
                             singlePointNoMatchCount ++; 
+                        } else {
+                            console.log(`${Math.floor(el[0])},${Math.floor(el[1])} === ${Math.floor(splitWordPoints[i][0])},${Math.floor(splitWordPoints[i][1])}`);
                         }
-                        console.log(singlePointNoMatchCount); // if === 192, point is not available
+                        // console.log(singlePointNoMatchCount); // if === 192, point is not available
                         if (singlePointNoMatchCount === availablePoints.length){
                             return pointIsAvailable = false;
                         } else {
@@ -168,30 +164,33 @@ class Canvas extends React.Component {
                     }
                 }
             }
-            checkIfArrayContainsPoint(availablePoints, splitWordPoints); 
+            checkIfPointsAvailable(availablePoints, splitWordPoints); 
 
-            if (totalNoMatchPointCount === splitWordPoints.length){
+            if (totalNoMatchPointCount > 0){
                 // then call write the word!
-                console.log('word must be moved'); 
+                console.log(`${wordArr[i]} must be moved`); 
+                // drawKeyWords(startPos, splitWord); 
                 // delete all points from available points
                 
                 // iterate loop
             } else {
-                console.log('draw word in current position'); 
+                console.log('points available,draw word in current position'); 
+                drawKeyWords(splitWord, splitWordPoints); 
+                // drawKeyWords(startPos, splitWord); 
                 // add to iteration tally
                 // if tally > numRows, exit loop (switch word direction)
                 // select new row
             }
-            drawKeyWords(startPos, splitWord); 
                 
         }
 
         // Draw Text Test
-            this.ctx.font = '220px serif';
+            this.ctx.font = '175px serif';
             this.ctx.fillStyle = 'rgba(255,255,255,0.1';  
             this.ctx.textAlign = 'center'; 
             for (let i = 0; i < gridPoints.length; i++){
-                this.ctx.fillText('H', gridPoints[i][0] + (gridBoxWidth), gridPoints[i][1] + (gridBoxHeight * 1.4));
+                this.ctx.fillText(`${gridPoints[i][0]}`, gridPoints[i][0], gridPoints[i][1]);
+                this.ctx.fillText(`${gridPoints[i][1]}`, gridPoints[i][0], gridPoints[i][1] + 175);
             }
         
 
