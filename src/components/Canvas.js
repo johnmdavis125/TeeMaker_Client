@@ -78,16 +78,40 @@ class Canvas extends React.Component {
             'PUSH',
             'SHIFT'
         ]; 
+
+        this.ctx.font = '220px serif';
+        this.ctx.fillStyle = 'green';  
+        this.ctx.textAlign = 'center'; 
+        const drawKeyWords = (splitWord, splitWordPoints) => {
+            for (let i = 0; i < splitWord.length; i++){
+                this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                // this.ctx.fillText(Math.floor(splitWordPoints[i][0]), splitWordPoints[i][0], splitWordPoints[i][1]);
+            } 
+        } 
+        
         let conflictingPointLocations = 0; 
-        let drawInputs = []; 
-        stageWordToDraw(
-            availablePoints, 
-            gridBoxWidth,
-            gridBoxHeight, 
-            wordArr, 
-            conflictingPointLocations,
-            drawInputs
-            );
+        let drawInputs = [];        
+        for (let i = 0; i < wordArr.length; i++){
+            stageWordToDraw(
+                availablePoints, 
+                gridBoxWidth,
+                gridBoxHeight, 
+                wordArr[i], 
+                conflictingPointLocations,
+                drawInputs
+                );
+
+                console.log(drawInputs); 
+                drawKeyWords(drawInputs[0], drawInputs[1]); 
+                let iterations = drawInputs.length / 2; 
+                for (let i = 0; i < iterations; i++){
+                    console.log(drawInputs[0],drawInputs[1]); 
+                    drawKeyWords(drawInputs[0], drawInputs[1]); 
+                    drawInputs.shift(); 
+                    drawInputs.shift(); 
+                }
+                console.log(drawInputs); 
+        }
             
         // // Draw Grid Lines
         // this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
@@ -110,34 +134,6 @@ class Canvas extends React.Component {
         // }
 
 
-        this.ctx.font = '220px serif';
-        this.ctx.fillStyle = 'green';  
-        this.ctx.textAlign = 'center'; 
-        const drawKeyWords = (splitWord, splitWordPoints) => {
-            for (let i = 0; i < splitWord.length; i++){
-                this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
-                // this.ctx.fillText(Math.floor(splitWordPoints[i][0]), splitWordPoints[i][0], splitWordPoints[i][1]);
-
-                // for (let j = 0; j < availablePoints.length; j++){
-                //     if ( availablePoints[j][0] === splitWordPoints[i][0] && availablePoints[j][1] === splitWordPoints[i][1]){
-                //         console.log(`removing ${availablePoints[j][0]},${availablePoints[j][1]} | ${splitWordPoints[i][0]},${splitWordPoints[i][1]}`)
-                //         availablePoints.splice(j,1); 
-                //     }
-                // }
-
-            } 
-        } 
-        
-        console.log(drawInputs); 
-        drawKeyWords(drawInputs[0], drawInputs[1]); 
-        let iterations = drawInputs.length / 2; 
-        for (let i = 0; i < iterations; i++){
-            console.log(drawInputs[0],drawInputs[1]); 
-            drawKeyWords(drawInputs[0], drawInputs[1]); 
-            drawInputs.shift(); 
-            drawInputs.shift(); 
-        }
-        console.log(drawInputs); 
     }
 
     paint(x,y){
