@@ -1,4 +1,6 @@
+let updatedPointsArr = null; 
 const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {
+    console.log('checkIfPointIsAvailable')
     // for each splitWordPoint
         // walk through availablePoints
             // -> if point is not available => modify point & start over function call
@@ -12,6 +14,7 @@ const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, co
         // if point is not available
         if (splitWordPoints[i][0] === el[0] && splitWordPoints[i][1] === el[1]){
             numPointsAvailable++; 
+            console.log(numPointsAvailable); 
         } 
         })
     }
@@ -19,22 +22,27 @@ const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, co
     // either modify or draw
     if (numPointsAvailable !== splitWordPoints.length){
         console.log('modify'); 
+        console.log(splitWordPoints); 
             // check if I can move it down
             if ((splitWordPoints[0][1] + gridBoxHeight) > (gridBoxHeight * 17)){
                 console.log('move points to top'); 
                 for (let j = 0; j < splitWordPoints.length; j++){
                     splitWordPoints[j][1] = gridBoxHeight; 
                 }
+                console.log(splitWordPoints)
             } else {
                 console.log('move points down'); 
                 for (let k = 0; k < splitWordPoints.length; k++){
                     splitWordPoints[k][1]+=gridBoxHeight;
                 }
+                console.log(splitWordPoints)
             }
         // call function again with new arguments
         checkIfPointIsAvailable(availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight); 
     } else {
         // remove points from available points array
+        console.log(`${numPointsAvailable} === ${splitWordPoints.length}`)
+        console.log('remove points, draw'); 
         for (let n = 0; n < availablePoints.length; n++){
             for (let p = 0; p < splitWordPoints.length; p++){
                 if (availablePoints[n][0] === splitWordPoints[p][0] && availablePoints[n][1] === splitWordPoints[p][1]){
@@ -42,9 +50,9 @@ const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, co
                 }
             }      
         }
-        // return drawInputs
-        // let drawInputs = []; 
+        updatedPointsArr = availablePoints; 
         drawInputs.push(splitWord, splitWordPoints); 
+        // drawInputs.push(splitWord, splitWordPoints); 
         return drawInputs; 
     }
 }
@@ -80,18 +88,18 @@ const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, con
 }
 const buildGrid = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
     console.log('buildGrid called'); 
-    // no need to re-build the grid every loop...refactor later
 
-    let gridPoints = []; 
-    // let boxCount = 0; 
-    for (let i = 0; i < 12; i++){
-        for (let j = 0; j < 17; j++){
-            gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
-            // boxCount += 1;
+        let gridPoints = []; 
+        // let boxCount = 0; 
+        for (let i = 0; i < 12; i++){
+            for (let j = 0; j < 17; j++){
+                gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
+                // boxCount += 1;
+            }
         }
-    }
-    availablePoints = gridPoints; 
-    console.log(availablePoints); 
+        availablePoints = gridPoints; 
+        console.log(availablePoints); 
+
     genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)
 }
 
@@ -101,7 +109,10 @@ const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, con
         buildGrid(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)   
 }
 
-export default stageWordToDraw; 
+export {
+    stageWordToDraw,
+    updatedPointsArr
+}; 
 
 
 // const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {

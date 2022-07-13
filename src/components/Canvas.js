@@ -1,7 +1,7 @@
 import React from 'react'; 
 import { DragGesture } from '@use-gesture/vanilla';
 import exportAsImage from './Utils/exportAsImage';
-import stageWordToDraw from './Utils/stageWordToDraw';
+import { stageWordToDraw, updatedPointsArr } from './Utils/stageWordToDraw';
 import './styles/Canvas.css'; 
 
 class Canvas extends React.Component {
@@ -63,7 +63,7 @@ class Canvas extends React.Component {
         })
 
         // WordSearch
-        let availablePoints = null; 
+        let availablePoints = []; 
         const gridBoxWidth = Math.floor((this.scaledWidth - 250) / 12); 
         const gridBoxHeight = Math.floor((this.scaledHeight - 400) / 16); 
         const wordArr = [
@@ -84,7 +84,9 @@ class Canvas extends React.Component {
         this.ctx.textAlign = 'center'; 
         const drawKeyWords = (splitWord, splitWordPoints) => {
             for (let i = 0; i < splitWord.length; i++){
+                console.log(splitWord, splitWordPoints[i]); 
                 this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+
                 // this.ctx.fillText(Math.floor(splitWordPoints[i][0]), splitWordPoints[i][0], splitWordPoints[i][1]);
             } 
         } 
@@ -92,7 +94,7 @@ class Canvas extends React.Component {
         let conflictingPointLocations = 0; 
         let drawInputs = [];        
         for (let i = 0; i < wordArr.length; i++){
-            stageWordToDraw(
+            stageWordToDraw( // available points isn't updating on iteration
                 availablePoints, 
                 gridBoxWidth,
                 gridBoxHeight, 
@@ -101,9 +103,14 @@ class Canvas extends React.Component {
                 drawInputs
                 );
 
+                // availablePoints = drawInputs[2]; 
+                // console.log(drawInputs[2]); 
+
+                console.log(updatedPointsArr); 
+
                 console.log(drawInputs); 
                 drawKeyWords(drawInputs[0], drawInputs[1]); 
-                let iterations = drawInputs.length / 2; 
+                let iterations = drawInputs.length / 3; 
                 for (let i = 0; i < iterations; i++){
                     console.log(drawInputs[0],drawInputs[1]); 
                     drawKeyWords(drawInputs[0], drawInputs[1]); 
