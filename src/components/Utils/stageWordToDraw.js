@@ -86,27 +86,11 @@ const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, con
     console.log(startPos);
     shiftLeft(availablePoints, startPos, splitWord, gridBoxWidth, gridBoxHeight, conflictingPointLocations, drawInputs);
 }
-const buildGrid = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
-    console.log('buildGrid called'); 
-
-        let gridPoints = []; 
-        // let boxCount = 0; 
-        for (let i = 0; i < 12; i++){
-            for (let j = 0; j < 17; j++){
-                gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
-                // boxCount += 1;
-            }
-        }
-        availablePoints = gridPoints; 
-        console.log(availablePoints); 
-
-    genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)
-}
 
 const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
     console.log('stageWordToDraw called')
     console.log(word); 
-        buildGrid(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)   
+    genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)   
 }
 
 export {
@@ -114,11 +98,33 @@ export {
     updatedPointsArr
 }; 
 
-
-// const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {
-//     console.log('checkIfPointIsAvailable called'); 
-//     console.log(conflictingPointLocations); 
-//     let pointIsAvailable = null;
+// const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
+    //     console.log('stageWordToDraw called')
+    //     console.log(word); 
+    //         buildGrid(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)   
+    // }
+    
+    // const buildGrid = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
+    //     console.log('buildGrid called'); 
+    
+    //         let gridPoints = []; 
+    //         // let boxCount = 0; 
+    //         for (let i = 0; i < 12; i++){
+    //             for (let j = 0; j < 17; j++){
+    //                 gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
+    //                 // boxCount += 1;
+    //             }
+    //         }
+    //         availablePoints = gridPoints; 
+    //         console.log(availablePoints); 
+    
+    //     genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)
+    // }
+   
+    // const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {
+        //     console.log('checkIfPointIsAvailable called'); 
+        //     console.log(conflictingPointLocations); 
+        //     let pointIsAvailable = null;
 //     for (let i = 0; i < splitWordPoints.length; i++){
 //         let pointsUnequalToEl = 0; 
 //         let pointsEqualToEl = 0; 
