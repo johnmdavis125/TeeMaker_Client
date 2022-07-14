@@ -62,22 +62,24 @@ class Canvas extends React.Component {
             }
         })
 
+    }
+    componentDidUpdate(){
         // WordSearch
         let availablePoints = []; 
         const gridBoxWidth = Math.floor((this.scaledWidth - 250) / 12); 
         const gridBoxHeight = Math.floor((this.scaledHeight - 400) / 16); 
-        const wordArr = [
-            'MAP',
-            'JOIN', 
-            'SPLIT',
-            'SLICE',
-            'REDUCE',
-            'TOSTRING',
-            'LENGTH', 
-            'POP',
-            'PUSH',
-            'SHIFT'
-        ]; 
+        // const wordArr = [
+        //     'MAP',
+        //     'JOIN', 
+        //     'SPLIT',
+        //     'SLICE',
+        //     'REDUCE',
+        //     'TOSTRING',
+        //     'LENGTH', 
+        //     'POP',
+        //     'PUSH',
+        //     'SHIFT'
+        // ]; 
         
         let gridPoints = []; 
         const buildGrid = () => {
@@ -92,36 +94,28 @@ class Canvas extends React.Component {
         }
         buildGrid(); 
 
-        // // Draw Grid Lines
-        // this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
-        // this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
-        // this.ctx.lineWidth = '20';
-        // for (let i = 0; i < 13; i++){
-        //         this.ctx.moveTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),gridBoxHeight - (gridBoxHeight / 2)); 
-            
-        //     this.ctx.lineTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),(gridBoxHeight - (gridBoxHeight / 2) + (gridBoxHeight * 16))); 
-        // }
-        // this.ctx.stroke(); 
-            
-        // // Draw Grid Text
-        // this.ctx.font = '175px serif';
-        // this.ctx.fillStyle = 'rgba(255,255,255,0.1';  
-        // this.ctx.textAlign = 'center'; 
-        // for (let i = 0; i < gridPoints.length; i++){
-        //     this.ctx.fillText(`${gridPoints[i][0]}`, gridPoints[i][0], gridPoints[i][1]);
-        //     this.ctx.fillText(`${gridPoints[i][1]}`, gridPoints[i][0], gridPoints[i][1] + 175);
-        // }
-        
+        const wordArr = this.props.wordSearchWordArr.arr; 
+        console.log(wordArr); 
+        wordArr.forEach(el => {
+            console.log(el); 
+        });
+
+        for (let i = 0; i < wordArr.length; i++){
+            wordArr[i] = wordArr[i].slice(0, wordArr[i].length - 2); 
+        }
+        console.log(wordArr); 
+
         let conflictingPointLocations = 0; 
         let drawInputs = [];        
-        for (let i = 0; i < wordArr.length; i++){
-            // randomly select text direction
-            const textDirections = ['horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
-            let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
-            console.log(randTextDirection); 
-            
-            stageWordToDraw( 
-            availablePoints, 
+        if (wordArr){
+            for (let i = 0; i < wordArr.length; i++){
+                // randomly select text direction
+                const textDirections = ['horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
+                let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
+                console.log(randTextDirection); 
+                
+                stageWordToDraw( 
+                    availablePoints, 
             gridBoxWidth,
             gridBoxHeight, 
             wordArr[i], 
@@ -174,7 +168,7 @@ class Canvas extends React.Component {
         updatedPointsArr.forEach(el => {
             this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
         });
-
+    } 
     }
     paint(x,y){
         if (this.state.painting){

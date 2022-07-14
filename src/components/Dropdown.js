@@ -1,9 +1,10 @@
 import React from 'react'; 
 
 class Dropdown extends React.Component {
-    constructor(){
-        super()
-        this.state = {file: {}, array: []};
+    constructor(props){
+        super(props)
+        this.state = {file: {}};
+        // this.state = {file: {}, array: []};
         this.fileReader = new FileReader(); 
     } 
     saveAs(){
@@ -14,7 +15,8 @@ class Dropdown extends React.Component {
         for (let i = 0; i < arr.length; i++){
             console.log(arr[i]); 
         }
-        this.setState({array: arr}); 
+        // this.setState({array: arr}); 
+        this.props.setWordSearchWordArr({arr})
     }
     handleChange = (e) => {
         console.log('handle change'); 
@@ -38,7 +40,7 @@ class Dropdown extends React.Component {
     }
     render(){
         const {btnTitle, options} = this.props;  
-        console.log(this.state.array); 
+        // console.log(this.state.array); 
         return (
             <div>
                 <div className="dropdown is-hoverable">

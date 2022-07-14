@@ -2,12 +2,18 @@ import React from 'react';
 import DropDown from './Dropdown'; 
 
 class HeaderMenu extends React.Component {
+    constructor(props){
+        super(props)
+    }
+    
     render(){
         return (
             <div style={{display: 'flex'}}>
-                <DropDown id="FileMenu" className="dropDown"
+                <DropDown
+                    id="FileMenu" className="dropDown"
                     btnTitle={'File'}
                     options={['Save As', 'Import File', 'option3']}
+                    setWordSearchWordArr={this.props.setWordSearchWordArr}
                 /> 
                 {/* <DropDown className="Menu2"
                     btnTitle={'title2'}
