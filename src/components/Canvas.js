@@ -92,25 +92,25 @@ class Canvas extends React.Component {
         }
         buildGrid(); 
 
-        // Draw Grid Lines
-        this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
-        this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
-        this.ctx.lineWidth = '20';
-        for (let i = 0; i < 13; i++){
-                this.ctx.moveTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),gridBoxHeight - (gridBoxHeight / 2)); 
+        // // Draw Grid Lines
+        // this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
+        // this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
+        // this.ctx.lineWidth = '20';
+        // for (let i = 0; i < 13; i++){
+        //         this.ctx.moveTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),gridBoxHeight - (gridBoxHeight / 2)); 
             
-            this.ctx.lineTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),(gridBoxHeight - (gridBoxHeight / 2) + (gridBoxHeight * 16))); 
-        }
-        this.ctx.stroke(); 
+        //     this.ctx.lineTo((gridBoxWidth - (gridBoxWidth / 2) + (gridBoxWidth * i)),(gridBoxHeight - (gridBoxHeight / 2) + (gridBoxHeight * 16))); 
+        // }
+        // this.ctx.stroke(); 
             
-        // Draw Grid Text
-        this.ctx.font = '175px serif';
-        this.ctx.fillStyle = 'rgba(255,255,255,0.1';  
-        this.ctx.textAlign = 'center'; 
-        for (let i = 0; i < gridPoints.length; i++){
-            this.ctx.fillText(`${gridPoints[i][0]}`, gridPoints[i][0], gridPoints[i][1]);
-            this.ctx.fillText(`${gridPoints[i][1]}`, gridPoints[i][0], gridPoints[i][1] + 175);
-        }
+        // // Draw Grid Text
+        // this.ctx.font = '175px serif';
+        // this.ctx.fillStyle = 'rgba(255,255,255,0.1';  
+        // this.ctx.textAlign = 'center'; 
+        // for (let i = 0; i < gridPoints.length; i++){
+        //     this.ctx.fillText(`${gridPoints[i][0]}`, gridPoints[i][0], gridPoints[i][1]);
+        //     this.ctx.fillText(`${gridPoints[i][1]}`, gridPoints[i][0], gridPoints[i][1] + 175);
+        // }
         
         let conflictingPointLocations = 0; 
         let drawInputs = [];        
@@ -154,15 +154,28 @@ class Canvas extends React.Component {
             drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
             let iterations = drawInputs.length / 3; 
             for (let i = 0; i < iterations; i++){
-                console.log(drawInputs[0],drawInputs[1]); 
-                drawKeyWords(drawInputs[0], drawInputs[1]); 
                 drawInputs.shift(); 
                 drawInputs.shift(); 
             }
-            console.log(drawInputs); 
         }
-    }
+        
+        // gather all possible letters from wordArr
+        let fillLetters = []; 
+        for (let i = 0; i < wordArr.length; i++){
+            for (let j = 0; j < wordArr[i].length; j++){
+                fillLetters.push(wordArr[i][j]); 
+            }
+        }
+        console.log(fillLetters); 
+        // Fill In
+        this.ctx.font = '175px serif';
+        this.ctx.fillStyle = 'rgba(255,255,255,1';  
+        this.ctx.textAlign = 'center'; 
+        updatedPointsArr.forEach(el => {
+            this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
+        });
 
+    }
     paint(x,y){
         if (this.state.painting){
             console.log(`paint here: ${x},${y}`); 
