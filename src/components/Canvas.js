@@ -116,8 +116,8 @@ class Canvas extends React.Component {
         let drawInputs = [];        
         for (let i = 0; i < wordArr.length; i++){
             // randomly select text direction
-            const textDirections = ['horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp'];
-            let randTextDirection = textDirections[Math.floor(Math.random() * 4)];
+            const textDirections = ['horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
+            let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
             console.log(randTextDirection); 
             
             stageWordToDraw( 
@@ -134,18 +134,18 @@ class Canvas extends React.Component {
             this.ctx.fillStyle = 'green';  
             this.ctx.textAlign = 'center'; 
             const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
-                if (textDirection === 'horizontalForward' || textDirection === 'verticalDown'){
+                if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
                     for (let i = 0; i < splitWord.length; i++){
                         console.log(splitWord, splitWordPoints[i]); 
                         this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
                     } 
-                } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp'){
+                } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp' || textDirection === 'diagonalBackwardDown' || textDirection === 'diagonalBackwardUp'){
                     let reversedSplitWord = splitWord.reverse();
                     for (let i = 0; i < splitWord.length; i++){
                         console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
                         this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
                     }
-                } 
+                }
             } 
 
             console.log(updatedPointsArr); 
