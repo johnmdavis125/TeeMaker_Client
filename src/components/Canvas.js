@@ -91,6 +91,7 @@ class Canvas extends React.Component {
             console.log(availablePoints); 
         }
         buildGrid(); 
+        
         // Draw Grid Lines
         this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
         this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
@@ -111,11 +112,10 @@ class Canvas extends React.Component {
             this.ctx.fillText(`${gridPoints[i][1]}`, gridPoints[i][0], gridPoints[i][1] + 175);
         }
         
-        
         let conflictingPointLocations = 0; 
         let drawInputs = [];        
         for (let i = 0; i < wordArr.length; i++){
-            stageWordToDraw( // available points isn't updating on iteration
+            stageWordToDraw( 
             availablePoints, 
             gridBoxWidth,
             gridBoxHeight, 
@@ -131,14 +131,8 @@ class Canvas extends React.Component {
                 for (let i = 0; i < splitWord.length; i++){
                     console.log(splitWord, splitWordPoints[i]); 
                     this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
-                    
-                    // this.ctx.fillText(Math.floor(splitWordPoints[i][0]), splitWordPoints[i][0], splitWordPoints[i][1]);
                 } 
             } 
-            
-            // availablePoints = drawInputs[2]; 
-            // console.log(drawInputs[2]); 
-            
             console.log(updatedPointsArr); 
             
             console.log(drawInputs); 
@@ -152,9 +146,6 @@ class Canvas extends React.Component {
             }
             console.log(drawInputs); 
         }
-        
-
-
     }
 
     paint(x,y){

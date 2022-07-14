@@ -1,10 +1,6 @@
 let updatedPointsArr = null; 
 const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {
     console.log('checkIfPointIsAvailable')
-    // for each splitWordPoint
-        // walk through availablePoints
-            // -> if point is not available => modify point & start over function call
-            // -> if point is available => remove from available points & add to drawInputs
 
     // determine if word is available
     let numPointsAvailable = 0; 
@@ -52,7 +48,6 @@ const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, co
         }
         updatedPointsArr = availablePoints; 
         drawInputs.push(splitWord, splitWordPoints); 
-        // drawInputs.push(splitWord, splitWordPoints); 
         return drawInputs; 
     }
 }
@@ -97,77 +92,3 @@ export {
     stageWordToDraw,
     updatedPointsArr
 }; 
-
-// const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
-    //     console.log('stageWordToDraw called')
-    //     console.log(word); 
-    //         buildGrid(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)   
-    // }
-    
-    // const buildGrid = (availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs) => {
-    //     console.log('buildGrid called'); 
-    
-    //         let gridPoints = []; 
-    //         // let boxCount = 0; 
-    //         for (let i = 0; i < 12; i++){
-    //             for (let j = 0; j < 17; j++){
-    //                 gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
-    //                 // boxCount += 1;
-    //             }
-    //         }
-    //         availablePoints = gridPoints; 
-    //         console.log(availablePoints); 
-    
-    //     genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, conflictingPointLocations, drawInputs)
-    // }
-   
-    // const checkIfPointIsAvailable = (availablePoints, splitWord, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxHeight) => {
-        //     console.log('checkIfPointIsAvailable called'); 
-        //     console.log(conflictingPointLocations); 
-        //     let pointIsAvailable = null;
-//     for (let i = 0; i < splitWordPoints.length; i++){
-//         let pointsUnequalToEl = 0; 
-//         let pointsEqualToEl = 0; 
-//         availablePoints.forEach(el => {
-//             if (splitWordPoints[i][0] !== el[0] || splitWordPoints[i][1] !== el[1]){ 
-//                 pointsUnequalToEl++; 
-//             } else {
-//                 console.log(`${Math.floor(el[0])},${Math.floor(el[1])} === ${Math.floor(splitWordPoints[i][0])},${Math.floor(splitWordPoints[i][1])}`);
-//                 pointsEqualToEl++;
-//             }
-//             // console.log(pointsUnequalToEl); // if === 192, point is not available
-//             // if (pointsUnequalToEl === availablePoints.length){
-//             //     return pointIsAvailable = true;
-//             // } else {
-//             //     return pointIsAvailable = false; 
-//             // }
-//             if (pointsEqualToEl > 0){ // bad logic *****
-//                 return pointIsAvailable = true; 
-//             } else {
-//                 return pointIsAvailable = false; 
-//             }
-
-            
-//         });
-//         if (pointIsAvailable === false){
-//             conflictingPointLocations++;
-//             // modify & restart function
-//             console.log('change to new row, call again***********');
-//         } else {
-//             console.log('ready to draw, removing points from available array'); 
-//             for (let j = 0; j < availablePoints.length; j++){
-//                 if ( availablePoints[j][0] === splitWordPoints[i][0] && availablePoints[j][1] === splitWordPoints[i][1]){
-//                     console.log(`removing ${availablePoints[j][0]},${availablePoints[j][1]} | ${splitWordPoints[i][0]},${splitWordPoints[i][1]}`)
-//                     availablePoints.splice(j,1); 
-//                 }
-//             }
-
-//         }
-//         console.log(conflictingPointLocations); 
-//     }
-
-
-//     drawInputs.push(splitWord, splitWordPoints); 
-//     console.log(drawInputs); 
-//     return drawInputs; 
-// }
