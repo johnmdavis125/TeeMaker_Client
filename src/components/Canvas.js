@@ -91,7 +91,7 @@ class Canvas extends React.Component {
             console.log(availablePoints); 
         }
         buildGrid(); 
-        
+
         // Draw Grid Lines
         this.ctx.moveTo(gridBoxWidth - (gridBoxWidth / 2),gridBoxHeight - (gridBoxHeight / 2)); 
         this.ctx.strokeStyle = 'rgba(255,255,255,0.2';
@@ -115,11 +115,17 @@ class Canvas extends React.Component {
         let conflictingPointLocations = 0; 
         let drawInputs = [];        
         for (let i = 0; i < wordArr.length; i++){
+            // randomly select text direction
+            const textDirections = ['horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp'];
+            let randTextDirection = textDirections[Math.floor(Math.random() * 4)];
+            console.log(randTextDirection); 
+            
             stageWordToDraw( 
             availablePoints, 
             gridBoxWidth,
             gridBoxHeight, 
             wordArr[i], 
+            randTextDirection,
             conflictingPointLocations,
             drawInputs
             );
@@ -127,16 +133,25 @@ class Canvas extends React.Component {
             this.ctx.font = '220px serif';
             this.ctx.fillStyle = 'green';  
             this.ctx.textAlign = 'center'; 
-            const drawKeyWords = (splitWord, splitWordPoints) => {
-                for (let i = 0; i < splitWord.length; i++){
-                    console.log(splitWord, splitWordPoints[i]); 
-                    this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+            const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
+                if (textDirection === 'horizontalForward' || textDirection === 'verticalDown'){
+                    for (let i = 0; i < splitWord.length; i++){
+                        console.log(splitWord, splitWordPoints[i]); 
+                        this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                    } 
+                } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp'){
+                    let reversedSplitWord = splitWord.reverse();
+                    for (let i = 0; i < splitWord.length; i++){
+                        console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
+                        this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                    }
                 } 
             } 
+
             console.log(updatedPointsArr); 
             
             console.log(drawInputs); 
-            drawKeyWords(drawInputs[0], drawInputs[1]); 
+            drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
             let iterations = drawInputs.length / 3; 
             for (let i = 0; i < iterations; i++){
                 console.log(drawInputs[0],drawInputs[1]); 
