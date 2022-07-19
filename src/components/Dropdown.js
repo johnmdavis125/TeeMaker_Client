@@ -4,7 +4,6 @@ class Dropdown extends React.Component {
     constructor(props){
         super(props)
         this.state = {file: {}};
-        // this.state = {file: {}, array: []};
         this.fileReader = new FileReader(); 
     } 
     saveAs(){
@@ -59,18 +58,24 @@ class Dropdown extends React.Component {
                         </a>
                         
                         <form className='dropdown-item'>
+                            {/* Choose File */}
                             <input
                                 type={"file"}
                                 accept={".csv"}
                                 onChange={this.handleChange}
                             />
+                            {/* Import File */}
                             <button onClick={(e) => this.handleSubmit(e)}>
                                 {options[1]}
+                            </button>
+    
+                            <button onClick={(e) => this.props.exportCanvas(e)}>
+                                {options[2]}
                             </button>
                         </form>
                                                 
                         <a href="#" className="dropdown-item is-active">
-                            {options[2]}
+                            {options[3]}
                         </a>
                         <a href="#" className="dropdown-item">
                             Other dropdown item

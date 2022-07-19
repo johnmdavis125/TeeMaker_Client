@@ -11,8 +11,10 @@ class Canvas extends React.Component {
             painting: false,
             pan: {x: 0, y: 0, active: false}
         }
-        this.canvasRef = React.createRef(); 
+        // this.canvasRef = React.createRef(); 
+        this.canvasRef = this.props.canvasRef; 
         this.canvasContainerRef = React.createRef(); 
+        // this.canvasExportRef = this.props.canvasExportRef; 
         this.ctx = null;
         this.width = 530;
         this.height = 697;
@@ -64,6 +66,13 @@ class Canvas extends React.Component {
 
     }
     componentDidUpdate(){
+        this.buildWordSearch(); 
+    }
+    buildWordSearch(){
+        console.log('buildWordSearch called'); 
+        // count how many columns have inputs in csv file
+        // for count, run loop to set wordArr, trigger exportFile, repeat
+
         // WordSearch
         let availablePoints = []; 
         const gridBoxWidth = Math.floor((this.scaledWidth - 250) / 12); 
@@ -94,15 +103,23 @@ class Canvas extends React.Component {
         }
         buildGrid(); 
 
-        const wordArr = this.props.wordSearchWordArr.arr; 
-        console.log(wordArr); 
-        wordArr.forEach(el => {
-            console.log(el); 
+        const allWordArrays = this.props.wordSearchWordArr.arr; 
+        console.log(`allWordArrays: ${allWordArrays}`); 
+        
+        allWordArrays.forEach(wordArr => {
+            console.log(wordArr); 
         });
-
-        for (let i = 0; i < wordArr.length; i++){
-            wordArr[i] = wordArr[i].slice(0, wordArr[i].length - 2); 
+        // cut off /r at the end of each line
+        for (let i = 0; i < allWordArrays.length; i++){
+            allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
         }
+        console.log(allWordArrays); 
+        // count number of puzzles to create based on input data
+        let numPuzzles = allWordArrays.length; 
+        console.log(numPuzzles); 
+
+        // Only build 1st puzzle from inputs (temp)
+        let wordArr = allWordArrays[0].split(','); 
         console.log(wordArr); 
 
         let conflictingPointLocations = 0; 
@@ -110,7 +127,7 @@ class Canvas extends React.Component {
         if (wordArr){
             for (let i = 0; i < wordArr.length; i++){
                 // randomly select text direction
-                const textDirections = ['horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward', 'horizontalForward','horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
+                const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
                 let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
                 console.log(randTextDirection); 
                 
@@ -161,7 +178,8 @@ class Canvas extends React.Component {
             }
         }
         console.log(fillLetters); 
-        // Fill In
+        
+        // Fill In remaining points with random letters
         this.ctx.font = '175px serif';
         this.ctx.fillStyle = 'rgba(255,255,255,1';  
         this.ctx.textAlign = 'center'; 
@@ -169,6 +187,8 @@ class Canvas extends React.Component {
             this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
         });
     } 
+    // this.export(); 
+
     }
     paint(x,y){
         if (this.state.painting){
@@ -188,13 +208,6 @@ class Canvas extends React.Component {
             this.setState({painting: true})
         }
     }
-    export = () => {
-        console.log('exporting canvas as Image'); 
-        this.props.setZoomFactor(1); 
-        requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
-        requestAnimationFrame(() => this.props.setZoomFactor(0.073611111111111)); 
-    }
-
     render(){
         
         const shiftX = -(((this.scaleFactor - 1) * 0.5) * this.width) + this.state.pan.x;
@@ -212,7 +225,6 @@ class Canvas extends React.Component {
                         onMouseDown={this.brushDown} 
                         onMouseUp={() => this.setState({painting: false})}
                     />
-                <button onClick={this.export} className="button is-small is-link" style={{width: '150px', marginLeft: '38%'}}>Export</button>
                 </div>
             </div>
         )

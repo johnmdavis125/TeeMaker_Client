@@ -5,22 +5,29 @@ import ToolBar from './components/ToolBar';
 import Canvas from './components/Canvas'; 
 import './components/styles/App.css';
 import LayersPanel from './components/LayersPanel';
+import exportAsImage from './components/Utils/exportAsImage';
 
 class App extends React.Component {
     constructor(){
         super()
         this.state = {zoomFactor: 0.073611111111111, wordSearchWordArr: []}
+        this.canvasRef = React.createRef(); 
         // this.state = {zoomFactor: 0.073611111111111}
         // this.state = {zoomFactor: 0.2} // test only
     }
-    // componentDidUpdate(){
-    //     console.log(this.state.wordSearchWordArr); 
-    // }
+
     setZoomFactor = (zoomFactor) => {
         this.setState({zoomFactor: zoomFactor});
     }
     setWordSearchWordArr = (wordArr) => {
         this.setState({wordSearchWordArr: wordArr});
+    }
+    exportCanvas = (e) => {
+        e.preventDefault(); 
+        console.log('call exportCanvas'); 
+        this.setState({zoomFactor: 1}); 
+        requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
+        requestAnimationFrame(() => this.setState({zoomFactor: 0.073611111111111}));
     }
     
     render(){    
@@ -29,6 +36,7 @@ class App extends React.Component {
                 <div style={{border: '1px solid blue'}}>
                     <HeaderMenu
                         setWordSearchWordArr={this.setWordSearchWordArr}
+                        exportCanvas={this.exportCanvas}
                     /> 
                 </div>
                
@@ -47,6 +55,7 @@ class App extends React.Component {
                             zoomFactor={this.state.zoomFactor}
                             setZoomFactor={this.setZoomFactor}   
                             wordSearchWordArr={this.state.wordSearchWordArr} 
+                            canvasRef={this.canvasRef}
                         />                        
                         <LayersPanel />
                     </div>                    
