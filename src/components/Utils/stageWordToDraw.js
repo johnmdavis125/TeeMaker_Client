@@ -132,8 +132,14 @@ const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, ran
         console.log('100+ start points generated, return'); 
         return; 
     } else {
+        console.log(`word: ${word}`)
+        console.log(`gridBoxWidth: ${gridBoxWidth}`)
+        console.log(`gridBoxHeight: ${gridBoxHeight}`)
+
         let randRow = Math.floor((Math.random() * 12) + 1); 
+        console.log(`randRow: ${randRow}`);
         let randCol = Math.floor((Math.random() * 16) + 1);
+        console.log(`randCol: ${randCol}`); 
         let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
         console.log(`${word} startPos: ${startPos}`); 
         let splitWord = word.split(''); 

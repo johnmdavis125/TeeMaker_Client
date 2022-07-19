@@ -35,6 +35,8 @@ class Dropdown extends React.Component {
                 console.log(`result: ${result}`); 
                 this.csvFileToArray(result); 
             }    
+
+            this.props.buildWordSearch(); 
         }
     }
     render(){
@@ -68,7 +70,7 @@ class Dropdown extends React.Component {
                             <button onClick={(e) => this.handleSubmit(e)}>
                                 {options[1]}
                             </button>
-    
+                            {/* Export Canvas */}
                             <button onClick={(e) => this.props.exportCanvas(e)}>
                                 {options[2]}
                             </button>

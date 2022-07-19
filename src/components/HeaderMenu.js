@@ -14,6 +14,7 @@ class HeaderMenu extends React.Component {
                     btnTitle={'File'}
                     options={['Save As', 'Import File', 'Export Canvas', 'option4']}
                     setWordSearchWordArr={this.props.setWordSearchWordArr}
+                    buildWordSearch={this.props.buildWordSearch}
                     exportCanvas={this.props.exportCanvas}
                 /> 
                 {/* <DropDown className="Menu2"
