@@ -43,16 +43,16 @@ class App extends React.Component {
             if (e.code === 'Space' && this.state.pan.active === false){
                 this.setState({painting: false});
                 this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: true}});
-                console.log(e.code, 'bar down', this.state.painting); 
+                // console.log(e.code, 'bar down', this.state.painting); 
             }
-            console.log(this.state.pan.active); 
+            // console.log(this.state.pan.active); 
         });
         window.addEventListener('keyup', (e)=>{
             if (e.code === 'Space'){
                 this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: false}})
-                console.log(e.code, 'bar up', this.state.painting);
+                // console.log(e.code, 'bar up', this.state.painting);
             }
-            console.log(this.state.pan.active); 
+            // console.log(this.state.pan.active); 
         })
         
         // Canvas Image
@@ -76,16 +76,12 @@ class App extends React.Component {
     }
     setWordSearchWordArr = (wordArr) => {
         this.setState({wordSearchWordArr: wordArr});
-        requestAnimationFrame(() => console.log(this.state.wordSearchWordArr.arr));
-        requestAnimationFrame(() => this.buildWordSearch()); 
+        // requestAnimationFrame(() => console.log(this.state.wordSearchWordArr.arr));
+        
     }
 
     buildWordSearch = () => {
         console.log('buildWordSearch called'); 
-        // count how many columns have inputs in csv file
-        // for count, run loop to set wordArr, trigger exportFile, repeat
-
-        // WordSearch
         let availablePoints = []; 
         const gridBoxWidth = Math.floor((this.scaledWidth - 250) / 12); 
         const gridBoxHeight = Math.floor((this.scaledHeight - 400) / 16); 
@@ -104,7 +100,8 @@ class App extends React.Component {
         
         let gridPoints = []; 
         const buildGrid = () => {
-            console.log('buildGrid called'); 
+            // console.log('buildGrid called'); 
+            gridPoints = []; 
             for (let i = 0; i < 12; i++){
                 for (let j = 0; j < 17; j++){
                     gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
@@ -118,95 +115,112 @@ class App extends React.Component {
         const allWordArrays = this.state.wordSearchWordArr.arr; 
         console.log(`allWordArrays: ${allWordArrays}`); 
         
-        allWordArrays.forEach(wordArr => {
-            console.log(wordArr); 
-        });
+        // allWordArrays.forEach(wordArr => {
+        //     console.log(wordArr); 
+        // });
         // cut off /r at the end of each line
         for (let i = 0; i < allWordArrays.length; i++){
             allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
         }
-        console.log(allWordArrays); 
+        // console.log(allWordArrays); 
         // count number of puzzles to create based on input data
         let numPuzzles = allWordArrays.length; 
-        console.log(numPuzzles); 
-
-        // Only build 1st puzzle from inputs (temp)
-        let wordArr = allWordArrays[0].split(','); 
-        console.log(wordArr); 
-
+        // console.log(numPuzzles); 
+        
+        let wordArr = []; 
         let conflictingPointLocations = 0; 
-        let drawInputs = [];        
-        if (wordArr){
-            for (let i = 0; i < wordArr.length; i++){
-                // randomly select text direction
-                const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
-                let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
-                console.log(randTextDirection); 
+        let drawInputs = []; 
+        const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
+            if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
+                for (let i = 0; i < splitWord.length; i++){
+                    console.log(splitWord, splitWordPoints[i]); 
+                    this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                } 
+            } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp' || textDirection === 'diagonalBackwardDown' || textDirection === 'diagonalBackwardUp'){
+                let reversedSplitWord = splitWord.reverse();
+                for (let i = 0; i < splitWord.length; i++){
+                    console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
+                    this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                }
+            }
+        } 
+    // start loop
+    for (let i = 0; i < numPuzzles; i++){
+    requestAnimationFrame(() => {
+        console.log(`iteration: ${i}`);
+        buildGrid(); 
+        availablePoints = gridPoints; 
+        console.log(availablePoints, gridPoints); 
+        wordArr = allWordArrays[i].split(','); 
+        console.log(wordArr); 
+        conflictingPointLocations = 0; 
+        drawInputs = [];        
+            if (wordArr){
+                for (let i = 0; i < wordArr.length; i++){
+                    // randomly select text direction
+                    const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
+                    let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
+                    console.log(randTextDirection); 
+                    
+                    stageWordToDraw( 
+                        availablePoints, 
+                        gridBoxWidth,
+                        gridBoxHeight, 
+                        wordArr[i], 
+                        randTextDirection,
+                        conflictingPointLocations,
+                        drawInputs,
+                        textDirections
+                    );
                 
-                stageWordToDraw( 
-                    availablePoints, 
-                    gridBoxWidth,
-                    gridBoxHeight, 
-                    wordArr[i], 
-                    randTextDirection,
-                    conflictingPointLocations,
-                    drawInputs
-                );
-            
-            this.ctx.font = '220px serif';
-            this.ctx.fillStyle = 'green';  
-            this.ctx.textAlign = 'center'; 
-            const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
-                if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
-                    for (let i = 0; i < splitWord.length; i++){
-                        console.log(splitWord, splitWordPoints[i]); 
-                        this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
-                    } 
-                } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp' || textDirection === 'diagonalBackwardDown' || textDirection === 'diagonalBackwardUp'){
-                    let reversedSplitWord = splitWord.reverse();
-                    for (let i = 0; i < splitWord.length; i++){
-                        console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
-                        this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                    console.log(updatedPointsArr); 
+                    console.log(drawInputs); 
+                    this.ctx.font = '220px serif';
+                    this.ctx.fillStyle = 'green';  
+                    this.ctx.textAlign = 'center'; 
+                   
+                    drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
+                    let iterations = drawInputs.length / 3; 
+                    for (let i = 0; i < iterations; i++){
+                        drawInputs.shift(); 
+                        drawInputs.shift(); 
                     }
                 }
-            } 
-
-            console.log(updatedPointsArr); 
             
-            console.log(drawInputs); 
-            drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
-            let iterations = drawInputs.length / 3; 
-            for (let i = 0; i < iterations; i++){
-                drawInputs.shift(); 
-                drawInputs.shift(); 
+            // gather all possible letters from wordArr
+            let fillLetters = []; 
+            for (let i = 0; i < wordArr.length; i++){
+                for (let j = 0; j < wordArr[i].length; j++){
+                    fillLetters.push(wordArr[i][j]); 
+                }
             }
-        }
+            // console.log(fillLetters); 
+            
+            // Fill In remaining points with random letters
+            this.ctx.font = '175px serif';
+            this.ctx.fillStyle = 'rgba(0,0,0,1';  
+            this.ctx.textAlign = 'center'; 
+            updatedPointsArr.forEach(el => {
+                this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
+            });
+            availablePoints = gridPoints; 
+            console.log(availablePoints); 
+        } 
         
-        // gather all possible letters from wordArr
-        let fillLetters = []; 
-        for (let i = 0; i < wordArr.length; i++){
-            for (let j = 0; j < wordArr[i].length; j++){
-                fillLetters.push(wordArr[i][j]); 
-            }
-        }
-        console.log(fillLetters); 
-        
-        // Fill In remaining points with random letters
-        this.ctx.font = '175px serif';
-        this.ctx.fillStyle = 'rgba(255,255,255,1';  
-        this.ctx.textAlign = 'center'; 
-        updatedPointsArr.forEach(el => {
-            this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
-        });
-    } 
+    })
+        this.exportCanvas(); 
+        // clear canvas
+        // requestAnimationFrame(() => this.ctx.clearRect(0,0,this.scaledWidth,this.scaledHeight)); 
+        // run loop again
     }
+}
     paint(x,y){
         if (this.state.painting){
-            console.log(`paint here: ${x},${y}`); 
-            console.log(`paint here: ${x * this.scaleFactor},${y * this.scaleFactor}`); 
-            console.log('paint');
-            console.log(this.state.zoomFactor); 
-            console.log(this.state.pan.x, this.state.pan.y); 
+            // console.log(`paint here: ${x},${y}`); 
+            // console.log(`paint here: ${x * this.scaleFactor},${y * this.scaleFactor}`); 
+            // console.log('paint');
+            // console.log(this.state.zoomFactor); 
+            // console.log(this.state.pan.x, this.state.pan.y); 
             this.ctx.beginPath(); 
             this.ctx.arc(((x * this.scaleFactor) - 2550) - (this.state.pan.x * this.scaleFactor), ((y * this.scaleFactor) - 2150) - (this.state.pan.y * this.scaleFactor), 25 * this.scaleFactor, 0, Math.PI * 2); 
             this.ctx.fillStyle = `hsl(0,100%,50%)`; 
@@ -218,12 +232,13 @@ class App extends React.Component {
             this.setState({painting: true})
         }
     }
-    exportCanvas = (e) => {
-        e.preventDefault(); 
+    exportCanvas = () => {
+        // e.preventDefault(); 
         console.log('call exportCanvas'); 
         this.setState({zoomFactor: 1}); 
         requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
         requestAnimationFrame(() => this.setState({zoomFactor: 0.073611111111111}));
+        requestAnimationFrame(() => this.ctx.clearRect(0,0,this.scaledWidth,this.scaledHeight));
     }
     
     render(){    

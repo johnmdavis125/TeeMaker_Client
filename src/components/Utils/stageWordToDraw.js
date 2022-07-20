@@ -126,11 +126,13 @@ const shiftTowardCenter = (availablePoints, startPos, splitWord, randTextDirecti
 
     checkIfPointIsAvailable(availablePoints, splitWord, randTextDirection, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxWidth, gridBoxHeight); 
 }
-const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs) => {
+const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections) => {
     console.log('genRandStartPos called'); 
-    if (startPointsGenerated > 100){
-        console.log('100+ start points generated, return'); 
+
+    if (startPointsGenerated > availablePoints.length){
+        console.log('return');     
         return; 
+        
     } else {
         console.log(`word: ${word}`)
         console.log(`gridBoxWidth: ${gridBoxWidth}`)
@@ -150,10 +152,17 @@ const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, ran
 
 }
 
-const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs) => {
+const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections) => {
     console.log('stageWordToDraw called')
+    console.log(availablePoints); 
+    console.log(gridBoxWidth); 
+    console.log(gridBoxHeight); 
     console.log(word); 
-    genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs)   
+    console.log(randTextDirection); 
+    console.log(conflictingPointLocations); 
+    console.log(drawInputs); 
+    console.log(textDirections); 
+    genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections)   
 }
 
 export {

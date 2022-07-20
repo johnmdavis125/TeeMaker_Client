@@ -21,24 +21,28 @@ class Dropdown extends React.Component {
         console.log('handle change'); 
         this.setState({file: e.target.files[0]}); 
         requestAnimationFrame(() => console.log(this.state.file)); 
+        requestAnimationFrame(() => {
+            if (this.state.file){
+                console.log('file exists');
+                this.fileReader.readAsText(this.state.file); 
+    
+                this.fileReader.onload = (event) => {
+                    const result = event.target.result;
+                    console.log(`result: ${result}`); 
+                    this.csvFileToArray(result); 
+                }  
+                requestAnimationFrame(() => this.props.buildWordSearch());   
+                
+            }
+        })
     }
-    handleSubmit = (e) => {
-        e.preventDefault(); 
-        console.log('handle submit'); 
+    // handleSubmit = (e) => {
+    //     e.preventDefault(); 
+    //     console.log('handle submit'); 
+        
+    //     // this.props.buildWordSearch(); 
+    // }
 
-        if (this.state.file){
-            console.log('file exists');
-            this.fileReader.readAsText(this.state.file); 
-
-            this.fileReader.onload = (event) => {
-                const result = event.target.result;
-                console.log(`result: ${result}`); 
-                this.csvFileToArray(result); 
-            }    
-
-            this.props.buildWordSearch(); 
-        }
-    }
     render(){
         const {btnTitle, options} = this.props;  
         // console.log(this.state.array); 
@@ -59,22 +63,26 @@ class Dropdown extends React.Component {
                             {options[0]}
                         </a>
                         
-                        <form className='dropdown-item'>
+                        {/* <form className='dropdown-item'> */}
                             {/* Choose File */}
                             <input
+                                className='dropdown-item'
                                 type={"file"}
                                 accept={".csv"}
                                 onChange={this.handleChange}
                             />
                             {/* Import File */}
-                            <button onClick={(e) => this.handleSubmit(e)}>
+                            {/* <button 
+                                onClick={(e) => this.handleSubmit(e)}
+                                className='dropdown-item'
+                                >
                                 {options[1]}
-                            </button>
+                            </button> */}
                             {/* Export Canvas */}
-                            <button onClick={(e) => this.props.exportCanvas(e)}>
+                            {/* <button onClick={(e) => this.props.exportCanvas(e)}>
                                 {options[2]}
-                            </button>
-                        </form>
+                            </button> */}
+                        {/* </form> */}
                                                 
                         <a href="#" className="dropdown-item is-active">
                             {options[3]}
