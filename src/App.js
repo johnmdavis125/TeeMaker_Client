@@ -231,26 +231,14 @@ class App extends React.Component {
                             this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
                         });
                     
-         
                     this.exportCanvas();   
-                 
                 }
-            
-       
             }
     }
     exportCanvas = () => {
-        // this.setState({zoomFactor: 1}); 
         exportAsImage(this.canvasRef.current, 'testFile'); 
-        // this.setState({zoomFactor: 0.073611111111111});
         this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500);
     }
-    // exportCanvas = () => {
-    //     this.setState({zoomFactor: 1}); 
-    //     requestAnimationFrame(() => exportAsImage(this.canvasRef.current, 'testFile')); 
-    //     requestAnimationFrame(() => this.setState({zoomFactor: 0.073611111111111}));
-    //     requestAnimationFrame(() => this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500));
-    // }
     setZoomFactor = (zoomFactor) => {
         this.setState({zoomFactor: zoomFactor});
     }
@@ -319,3 +307,10 @@ class App extends React.Component {
 }
 
 export default App; 
+
+// check if any files in downloads folder -> if so, don't run program
+// Custom named files 
+// Script/Child process - move files to public folder
+// drawImage background + drawImage puzzle (to scale) & export
+// convert files to pdf
+// combine files into single PDF
