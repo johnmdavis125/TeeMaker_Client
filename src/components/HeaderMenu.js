@@ -16,6 +16,7 @@ class HeaderMenu extends React.Component {
                     setWordSearchWordArr={this.props.setWordSearchWordArr}
                     buildWordSearch={this.props.buildWordSearch}
                     combinePageANDPuzzle={this.props.combinePageANDPuzzle}
+                    numPuzzles={this.props.numPuzzles}
                 /> 
                 {/* <DropDown className="Menu2"
                     btnTitle={'title2'}

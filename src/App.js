@@ -16,6 +16,7 @@ class App extends React.Component {
             // zoomFactor: 1,
             zoomFactor: 0.073611111111111,
             wordSearchWordArr: [],
+            numPuzzles: 0,
             painting: false,
             pan: {x: 0, y: 0, active: false}
         }
@@ -124,6 +125,7 @@ class App extends React.Component {
             allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
         }
         this.numPuzzles = allWordArrays.length; 
+        this.setState({numPuzzles: this.numPuzzles});
         let wordArr = []; 
         let conflictingPointLocations = 0; 
         let drawInputs = []; 
@@ -261,13 +263,13 @@ class App extends React.Component {
                     console.log(this.ctx); 
                     this.ctx.drawImage(bgPage,this.translateOriginX,this.translateOriginY, this.scaledWidth, this.scaledHeight); 
                 }
-                
                 puzzle.onload = () => {        
                     console.log(puzzle); 
                     this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .175) - 190,this.translateOriginY + (this.scaledHeight * .091) - 80, this.scaledWidth * .7, this.scaledHeight * .7);
                     
                     this.exportCanvas(`page${p}`); 
                 }
+                
             })
         }
             
@@ -301,6 +303,7 @@ class App extends React.Component {
                         setWordSearchWordArr={this.setWordSearchWordArr}
                         buildWordSearch={this.buildWordSearch}
                         combinePageANDPuzzle={this.combinePageANDPuzzle}
+                        numPuzzles={this.state.numPuzzles}
                     /> 
                 </div>
                 <div className='columns'>

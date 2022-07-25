@@ -63,7 +63,7 @@ class Dropdown extends React.Component {
                         <a href="#" className="dropdown-item is-active">
                             {options[3]}
                         </a>
-                        <a onClick={() => this.props.combinePageANDPuzzle(3)} className="dropdown-item">
+                        <a onClick={() => this.props.combinePageANDPuzzle(this.props.numPuzzles)} className="dropdown-item">
                             Combine and Export Pages
                         </a>
                         <hr className="dropdown-divider"/>
