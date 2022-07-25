@@ -13,8 +13,8 @@ class App extends React.Component {
     constructor(){
         super()
         this.state = {
-            // zoomFactor: 1,
-            zoomFactor: 0.073611111111111,
+            zoomFactor: 1,
+            // zoomFactor: 0.073611111111111,
             wordSearchWordArr: [],
             numPuzzles: 0,
             painting: false,
@@ -111,8 +111,8 @@ class App extends React.Component {
         const buildGrid = () => {
             gridPoints = []; 
             for (let i = 0; i < 12; i++){
-                for (let j = 0; j < 17; j++){
-                    gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, j * gridBoxHeight]); 
+                for (let j = 0; j < 16; j++){
+                    gridPoints.push([(i * gridBoxWidth) + gridBoxWidth, (j * gridBoxHeight) + gridBoxHeight]); 
                 }
             }
             availablePoints = gridPoints; 
@@ -122,7 +122,9 @@ class App extends React.Component {
         // Define DrawKeyWords Function
         const allWordArrays = this.state.wordSearchWordArr.arr; 
         for (let i = 0; i < allWordArrays.length; i++){
-            allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
+            if (i !== allWordArrays.length - 1){
+                allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
+            }
         }
         this.numPuzzles = allWordArrays.length; 
         this.setState({numPuzzles: this.numPuzzles});
@@ -133,13 +135,14 @@ class App extends React.Component {
             if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
                 for (let i = 0; i < splitWord.length; i++){
                     console.log(splitWord, splitWordPoints[i]); 
-                    this.ctx.fillText(splitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                    this.ctx.fillText(splitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
                 } 
             } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp' || textDirection === 'diagonalBackwardDown' || textDirection === 'diagonalBackwardUp'){
                 let reversedSplitWord = splitWord.reverse();
                 for (let i = 0; i < splitWord.length; i++){
                     console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
-                    this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0], splitWordPoints[i][1]);
+                    // this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1]);
+                    this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
                 }
             }
         } 
@@ -235,7 +238,8 @@ class App extends React.Component {
                             }
                         }
                         updatedPointsArr.forEach(el => {
-                            this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
+                            // this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1]); 
+                            this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1] + (this.scaledHeight * 0.018)); 
                         });
                     
                     this.exportCanvas(`puzzle${i+1}`);   
@@ -265,7 +269,7 @@ class App extends React.Component {
                 }
                 puzzle.onload = () => {        
                     console.log(puzzle); 
-                    this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .175) - 190,this.translateOriginY + (this.scaledHeight * .091) - 80, this.scaledWidth * .7, this.scaledHeight * .7);
+                    this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .1265),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
                     
                     this.exportCanvas(`page${p}`); 
                 }
