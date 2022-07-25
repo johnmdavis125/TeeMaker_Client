@@ -13,8 +13,8 @@ class App extends React.Component {
     constructor(){
         super()
         this.state = {
-            zoomFactor: 1,
-            // zoomFactor: 0.073611111111111,
+            // zoomFactor: 1,
+            zoomFactor: 0.073611111111111,
             wordSearchWordArr: [],
             painting: false,
             pan: {x: 0, y: 0, active: false}
@@ -29,6 +29,7 @@ class App extends React.Component {
         this.ctx = null; 
         this.translateOriginX = ((window.innerWidth / 2) - ((window.innerHeight * 0.53) / 2));
         this.translateOriginY = ((((window.innerHeight + 45) / 2) - ((window.innerHeight * 0.70) / 2))); 
+        this.numPuzzles = 0; 
     }
     componentDidMount() {
         let canvas = this.canvasRef.current; 
@@ -54,11 +55,15 @@ class App extends React.Component {
         
         // // Canvas Image
         // const image = new Image(); 
+        // const image2 = new Image(); 
         // // image.src = './SizeTest7200x9600.png';  
-        // image.src = './devGirl2.png';   
+        // image.src = './bgPage1.png';  
+        // image2.src = './puzzle1.png';  
         // image.onload = () => {
         //     this.ctx.drawImage(image,this.translateOriginX,this.translateOriginY); 
-        
+        //     this.ctx.drawImage(image2,this.translateOriginX,this.translateOriginY); 
+        // }
+
         // this.ctx.strokeStyle = 'black';
         // this.ctx.lineWidth = 50; 
         // this.ctx.fillStyle = 'rgba(226,229,231,0.9)';
@@ -118,7 +123,7 @@ class App extends React.Component {
         for (let i = 0; i < allWordArrays.length; i++){
             allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
         }
-        let numPuzzles = allWordArrays.length; 
+        this.numPuzzles = allWordArrays.length; 
         let wordArr = []; 
         let conflictingPointLocations = 0; 
         let drawInputs = []; 
@@ -141,7 +146,7 @@ class App extends React.Component {
         image.src = './devGirl2.png';   
         image.onload = () => {
             // Loop -> Build & Export Search Word
-            for (let i = 0; i < numPuzzles; i++){
+            for (let i = 0; i < this.numPuzzles; i++){
               
                     wordArr = allWordArrays[i].split(','); 
                     
@@ -151,11 +156,11 @@ class App extends React.Component {
                     this.ctx.strokeStyle = 'black';
                     this.ctx.lineWidth = 50; 
                     this.ctx.fillStyle = 'rgba(226,229,231,0.9)';
-                    this.ctx.strokeRect(this.scaledWidth * .177,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
-                    this.ctx.fillRect(this.scaledWidth * .177,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
+                    this.ctx.strokeRect(this.scaledWidth * .180,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
+                    this.ctx.fillRect(this.scaledWidth * .180,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
                     // KeyWord Box
                     this.ctx.fillStyle = 'whitesmoke';
-                    let clueStartPosX = this.scaledWidth * .177;  
+                    let clueStartPosX = this.scaledWidth * .180;  
                     let clueStartPosY = this.scaledHeight * .81;  
                     this.ctx.strokeRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
                     this.ctx.fillRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
@@ -186,7 +191,7 @@ class App extends React.Component {
                     // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.19 ); 
                     // Export
             
-                    this.exportCanvas(); 
+                    this.exportCanvas(`bgPage${i+1}`); 
             
               
                         buildGrid(); 
@@ -194,7 +199,7 @@ class App extends React.Component {
                         conflictingPointLocations = 0; 
                         drawInputs = [];        
                         
-                        for (let i = 0; i < wordArr.length; i++){
+                        for (let k = 0; k < wordArr.length; k++){
                             const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
                             let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
                             console.log(randTextDirection); 
@@ -203,7 +208,7 @@ class App extends React.Component {
                                 availablePoints, 
                                 gridBoxWidth,
                                 gridBoxHeight, 
-                                wordArr[i], 
+                                wordArr[k], 
                                 randTextDirection,
                                 conflictingPointLocations,
                                 drawInputs,
@@ -215,29 +220,57 @@ class App extends React.Component {
                                 this.ctx.textAlign = 'center'; 
                                 drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
                                 let iterations = drawInputs.length / 3; 
-                                for (let i = 0; i < iterations; i++){
+                                for (let t = 0; t < iterations; t++){
                                     drawInputs.shift(); 
                                     drawInputs.shift(); 
                                 }
                         }
                         // Fill in remaining letter positions
                         let fillLetters = []; 
-                        for (let i = 0; i < wordArr.length; i++){
-                            for (let j = 0; j < wordArr[i].length; j++){
-                                fillLetters.push(wordArr[i][j]); 
+                        for (let u = 0; u < wordArr.length; u++){
+                            for (let q = 0; q < wordArr[u].length; q++){
+                                fillLetters.push(wordArr[u][q]); 
                             }
                         }
                         updatedPointsArr.forEach(el => {
                             this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0], el[1]); 
                         });
                     
-                    this.exportCanvas();   
+                    this.exportCanvas(`puzzle${i+1}`);   
                 }
             }
     }
-    exportCanvas = () => {
-        exportAsImage(this.canvasRef.current, 'testFile'); 
+    exportCanvas = (fileName) => {
+        exportAsImage(this.canvasRef.current, fileName); 
         this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500);
+    }
+    combinePageANDPuzzle = (numPuzzles) => {
+        console.log('combinePageANDPuzzle method called'); 
+        console.log(`numPuzzles: ${numPuzzles}`); 
+        for (let p = 1; p < numPuzzles + 1; p++){
+            requestAnimationFrame(() => {
+                let bgPage = new Image(); 
+                bgPage.src = `./exportedFiles/bgPage${p}.png`  
+                console.log(bgPage); 
+                let puzzle = new Image(); 
+                puzzle.src = `./exportedFiles/puzzle${p}.png`
+                console.log(puzzle);    
+                
+                bgPage.onload = () => {        
+                    console.log(bgPage); 
+                    console.log(this.ctx); 
+                    this.ctx.drawImage(bgPage,this.translateOriginX,this.translateOriginY, this.scaledWidth, this.scaledHeight); 
+                }
+                
+                puzzle.onload = () => {        
+                    console.log(puzzle); 
+                    this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .175) - 190,this.translateOriginY + (this.scaledHeight * .091) - 80, this.scaledWidth * .7, this.scaledHeight * .7);
+                    
+                    this.exportCanvas(`page${p}`); 
+                }
+            })
+        }
+            
     }
     setZoomFactor = (zoomFactor) => {
         this.setState({zoomFactor: zoomFactor});
@@ -267,7 +300,7 @@ class App extends React.Component {
                     <HeaderMenu
                         setWordSearchWordArr={this.setWordSearchWordArr}
                         buildWordSearch={this.buildWordSearch}
-                        exportCanvas={this.exportCanvas}
+                        combinePageANDPuzzle={this.combinePageANDPuzzle}
                     /> 
                 </div>
                 <div className='columns'>
@@ -310,7 +343,8 @@ export default App;
 
 // check if any files in downloads folder -> if so, don't run program
 // Custom named files 
-// Script/Child process - move files to public folder
-// drawImage background + drawImage puzzle (to scale) & export
+// Script/Child process - move files to public folder ++
+// drawImage background + drawImage puzzle (to scale) & export -*_*-
+    // Fix bug -> file size not working - should be zoomfactor:1
 // convert files to pdf
 // combine files into single PDF

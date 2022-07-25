@@ -14,7 +14,6 @@ class Dropdown extends React.Component {
         for (let i = 0; i < arr.length; i++){
             console.log(arr[i]); 
         }
-        // this.setState({array: arr}); 
         this.props.setWordSearchWordArr({arr})
     }
     handleChange = (e) => {
@@ -36,16 +35,9 @@ class Dropdown extends React.Component {
             }
         })
     }
-    // handleSubmit = (e) => {
-    //     e.preventDefault(); 
-    //     console.log('handle submit'); 
-        
-    //     // this.props.buildWordSearch(); 
-    // }
 
     render(){
         const {btnTitle, options} = this.props;  
-        // console.log(this.state.array); 
         return (
             <div>
                 <div className="dropdown is-hoverable">
@@ -62,39 +54,22 @@ class Dropdown extends React.Component {
                         <a onClick={this.saveAs} className="dropdown-item" id="testItem">
                             {options[0]}
                         </a>
-                        
-                        {/* <form className='dropdown-item'> */}
-                            {/* Choose File */}
                             <input
                                 className='dropdown-item'
                                 type={"file"}
                                 accept={".csv"}
                                 onChange={this.handleChange}
-                            />
-                            {/* Import File */}
-                            {/* <button 
-                                onClick={(e) => this.handleSubmit(e)}
-                                className='dropdown-item'
-                                >
-                                {options[1]}
-                            </button> */}
-                            {/* Export Canvas */}
-                            {/* <button onClick={(e) => this.props.exportCanvas(e)}>
-                                {options[2]}
-                            </button> */}
-                        {/* </form> */}
-                                                
+                            />                  
                         <a href="#" className="dropdown-item is-active">
                             {options[3]}
                         </a>
-                        <a href="#" className="dropdown-item">
-                            Other dropdown item
+                        <a onClick={() => this.props.combinePageANDPuzzle(3)} className="dropdown-item">
+                            Combine and Export Pages
                         </a>
                         <hr className="dropdown-divider"/>
                         <a href="#" className="dropdown-item">
                             With a divider
                         </a>
-                        {/* <div>{this.state.array}</div> */}
                         </div>
                     </div>
                 </div>
