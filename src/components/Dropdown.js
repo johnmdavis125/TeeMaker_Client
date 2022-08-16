@@ -10,11 +10,41 @@ class Dropdown extends React.Component {
         console.log('saveAs'); 
     }
     csvFileToArray = (string) => {
-        const arr = string.split('\n');
-        for (let i = 0; i < arr.length; i++){
-            console.log(arr[i]); 
+        const rawArr = string.split('\n'); // rawArr.length = number of rows in csv data
+        const titleArr = []; 
+        const wordArr = []; 
+        console.log('data - should contain titles'); 
+        for (let i = 0; i < rawArr.length; i++){
+            console.log(rawArr[i]); 
         }
-        this.props.setWordSearchWordArr({arr})
+
+        for (let i = 0; i < rawArr.length; i++){
+            const subArr = rawArr[i].split(','); 
+            const title = subArr[0]; 
+            titleArr.push(title); 
+            subArr.shift();
+            
+            const arr = subArr.join(','); 
+            wordArr.push(arr); 
+            
+        }
+
+        console.log('titleArr', titleArr); 
+        
+        // get rid of /r suffix
+        for (let i = 0; i < wordArr.length; i++){
+            if (i !== wordArr.length - 1){
+                wordArr[i] = wordArr[i].slice(0, wordArr[i].length - 1); 
+            }
+        }
+        
+        // wordArr should now be the same as if the title column wasn't included...print to console to make sure
+        console.log('data - should not contain titles'); 
+        console.log('wordArr', wordArr); 
+        // refactor titleArr to be passed as props
+        
+        this.props.setWordSearchWordArr({wordArr})
+        // this.props.setWordSearchTitleArr
     }
     handleChange = (e) => {
         console.log('handle change'); 

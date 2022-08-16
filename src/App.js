@@ -81,12 +81,14 @@ class App extends React.Component {
         buildGrid(); 
         
         // Define DrawKeyWords Function
-        const allWordArrays = this.state.wordSearchWordArr.arr; 
-        for (let i = 0; i < allWordArrays.length; i++){
-            if (i !== allWordArrays.length - 1){
-                allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
-            }
-        }
+        // const allWordArrays = this.state.wordSearchWordArr.arr; 
+        const allWordArrays = this.state.wordSearchWordArr.wordArr; 
+        console.log(allWordArrays); 
+        // for (let i = 0; i < allWordArrays.length; i++){
+        //     if (i !== allWordArrays.length - 1){
+        //         allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
+        //     }
+        // }
         this.numPuzzles = allWordArrays.length; 
         this.setState({numPuzzles: this.numPuzzles});
         let wordArr = []; 
