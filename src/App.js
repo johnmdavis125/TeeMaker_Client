@@ -53,45 +53,6 @@ class App extends React.Component {
                 this.setState({pan: {x: this.state.pan.x, y: this.state.pan.y, active: false}})
             }
         })
-        
-        // // Canvas Image
-        // const image = new Image(); 
-        // const image2 = new Image(); 
-        // // image.src = './SizeTest7200x9600.png';  
-        // image.src = './bgPage1.png';  
-        // image2.src = './puzzle1.png';  
-        // image.onload = () => {
-        //     this.ctx.drawImage(image,this.translateOriginX,this.translateOriginY); 
-        //     this.ctx.drawImage(image2,this.translateOriginX,this.translateOriginY); 
-        // }
-
-        // this.ctx.strokeStyle = 'black';
-        // this.ctx.lineWidth = 50; 
-        // this.ctx.fillStyle = 'rgba(226,229,231,0.9)';
-        // this.ctx.strokeRect(this.scaledWidth * .177,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
-        // this.ctx.fillRect(this.scaledWidth * .177,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
-        
-        // this.ctx.fillStyle = 'whitesmoke';
-        // let clueStartPosX = this.scaledWidth * .177;  
-        // let clueStartPosY = this.scaledHeight * .81;  
-        // this.ctx.strokeRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
-        // this.ctx.fillRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
-        
-        // this.ctx.font = '220px serif';
-        // this.ctx.fillStyle = 'rgba(0,0,0,1)';  
-        // this.ctx.textAlign = 'center'; 
-        // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.03 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.07 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.11 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.15 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.19 ); 
-   
-        // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.03 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.07 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.11 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.15 ); 
-        // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.19 ); 
-        // }
 
         // Pan
         const el = document.getElementById('drag'); 
@@ -183,19 +144,8 @@ class App extends React.Component {
                             this.ctx.fillText(wordArr[j], clueStartPosX * 3.75, clueStartPosY * (1.03 + (.04 * (j - 5))));
                         }
                     }
-                    // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.03 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.07 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.11 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.15 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 2.25, clueStartPosY * 1.19 ); 
-            
-                    // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.03 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.07 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.11 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.15 ); 
-                    // this.ctx.fillText('testing', clueStartPosX * 3.75, clueStartPosY * 1.19 ); 
+
                     // Export
-            
                     this.exportCanvas(`bgPage${i+1}`); 
             
               
@@ -355,3 +305,8 @@ export default App;
     // Fix bug -> file size not working - should be zoomfactor:1
 // convert files to pdf
 // combine files into single PDF
+
+// - adjust puzzle image right
+// - add capture of solutions when exporting puzzle
+// - draw solutions puzzles four to a page following standard export (label accordingly)
+// - Add chart titles from first column of data sheet
