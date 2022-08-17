@@ -14,6 +14,7 @@ class HeaderMenu extends React.Component {
                     btnTitle={'File'}
                     options={['Save As', 'Export Canvas', 'option4']}
                     setWordSearchWordArr={this.props.setWordSearchWordArr}
+                    setWordSearchTitleArr={this.props.setWordSearchTitleArr}
                     buildWordSearch={this.props.buildWordSearch}
                     combinePageANDPuzzle={this.props.combinePageANDPuzzle}
                     numPuzzles={this.props.numPuzzles}

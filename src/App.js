@@ -16,6 +16,7 @@ class App extends React.Component {
             zoomFactor: 1,
             // zoomFactor: 0.073611111111111,
             wordSearchWordArr: [],
+            wordSearchTitleArr: [],
             numPuzzles: 0,
             painting: false,
             pan: {x: 0, y: 0, active: false}
@@ -81,14 +82,10 @@ class App extends React.Component {
         buildGrid(); 
         
         // Define DrawKeyWords Function
-        // const allWordArrays = this.state.wordSearchWordArr.arr; 
+        const titleArr = this.state.wordSearchTitleArr.titleArr;
+        console.log(titleArr); 
         const allWordArrays = this.state.wordSearchWordArr.wordArr; 
         console.log(allWordArrays); 
-        // for (let i = 0; i < allWordArrays.length; i++){
-        //     if (i !== allWordArrays.length - 1){
-        //         allWordArrays[i] = allWordArrays[i].slice(0, allWordArrays[i].length - 1); 
-        //     }
-        // }
         this.numPuzzles = allWordArrays.length; 
         this.setState({numPuzzles: this.numPuzzles});
         let wordArr = []; 
@@ -124,26 +121,35 @@ class App extends React.Component {
                     this.ctx.strokeStyle = 'black';
                     this.ctx.lineWidth = 50; 
                     this.ctx.fillStyle = 'rgba(226,229,231,0.9)';
-                    this.ctx.strokeRect(this.scaledWidth * .180,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
-                    this.ctx.fillRect(this.scaledWidth * .180,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
+                    this.ctx.strokeRect(this.scaledWidth * .202,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
+                    this.ctx.fillRect(this.scaledWidth * .202,this.scaledHeight * .1, this.scaledWidth * .7, this.scaledHeight * .7); 
                     // KeyWord Box
                     this.ctx.fillStyle = 'whitesmoke';
-                    let clueStartPosX = this.scaledWidth * .180;  
+                    let clueStartPosX = this.scaledWidth * .183;  
                     let clueStartPosY = this.scaledHeight * .81;  
-                    this.ctx.strokeRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
-                    this.ctx.fillRect(clueStartPosX, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .177); 
-                    // Keywords
+                    
+                    this.ctx.strokeRect(this.scaledWidth * .202, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .2); 
+                    this.ctx.fillRect(this.scaledWidth * .202, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .2); 
+                    // Keyword Title
                     this.ctx.font = '220px serif';
                     this.ctx.fillStyle = 'rgba(0,0,0,1)';  
                     this.ctx.textAlign = 'center'; 
+                    console.log(titleArr[i]); 
+                    this.ctx.fillText(titleArr[i], clueStartPosX * 3, clueStartPosY * 1.03); 
+                        // Title underline
+                        this.ctx.moveTo(clueStartPosX * 1.5, clueStartPosY * 1.032); 
+                        this.ctx.lineTo(clueStartPosX * 4.5, clueStartPosY * 1.032);
+                        this.ctx.lineWidth = 20; 
+                        this.ctx.stroke(); 
+                    // Keywords
                     for (let j = 0; j < wordArr.length; j++){
                         console.log(wordArr)
                         if (j < 5){
                             console.log(wordArr[j]); 
-                            this.ctx.fillText(wordArr[j], clueStartPosX * 2.25, clueStartPosY * (1.03 + (.04 * j))); 
+                            this.ctx.fillText(wordArr[j], clueStartPosX * 2.25, clueStartPosY * (1.03 + (.04 * (j + 1)))); 
                         } else if (j < wordArr.length){
                             console.log(wordArr[j]); 
-                            this.ctx.fillText(wordArr[j], clueStartPosX * 3.75, clueStartPosY * (1.03 + (.04 * (j - 5))));
+                            this.ctx.fillText(wordArr[j], clueStartPosX * 3.75, clueStartPosY * (1.03 + (.04 * ((j + 1) - 5))));
                         }
                     }
 
@@ -221,7 +227,7 @@ class App extends React.Component {
                 }
                 puzzle.onload = () => {        
                     console.log(puzzle); 
-                    this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .1265),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
+                    this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .15),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
                     
                     this.exportCanvas(`page${p}`); 
                 }
@@ -235,6 +241,9 @@ class App extends React.Component {
     }
     setWordSearchWordArr = (wordArr) => {
         this.setState({wordSearchWordArr: wordArr});
+    }
+    setWordSearchTitleArr = (titleArr) => {
+        this.setState({wordSearchTitleArr: titleArr});
     }
     paint(x,y){
         if (this.state.painting){
@@ -257,6 +266,7 @@ class App extends React.Component {
                 <div style={{border: '1px solid blue'}}>
                     <HeaderMenu
                         setWordSearchWordArr={this.setWordSearchWordArr}
+                        setWordSearchTitleArr={this.setWordSearchTitleArr}
                         buildWordSearch={this.buildWordSearch}
                         combinePageANDPuzzle={this.combinePageANDPuzzle}
                         numPuzzles={this.state.numPuzzles}

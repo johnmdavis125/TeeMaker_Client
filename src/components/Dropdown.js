@@ -41,10 +41,9 @@ class Dropdown extends React.Component {
         // wordArr should now be the same as if the title column wasn't included...print to console to make sure
         console.log('data - should not contain titles'); 
         console.log('wordArr', wordArr); 
-        // refactor titleArr to be passed as props
         
-        this.props.setWordSearchWordArr({wordArr})
-        // this.props.setWordSearchTitleArr
+        this.props.setWordSearchTitleArr({titleArr}); 
+        this.props.setWordSearchWordArr({wordArr});
     }
     handleChange = (e) => {
         console.log('handle change'); 
