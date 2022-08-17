@@ -90,12 +90,18 @@ class App extends React.Component {
         this.setState({numPuzzles: this.numPuzzles});
         let wordArr = []; 
         let conflictingPointLocations = 0; 
-        let drawInputs = []; 
+        let drawInputs = [];
+        let answerKeyPoints = [];  
         const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
             if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
                 for (let i = 0; i < splitWord.length; i++){
                     console.log(splitWord, splitWordPoints[i]); 
                     this.ctx.fillText(splitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
+                        // record first and final point coordinates - for answer key lines
+                        if (i === 0){
+                            answerKeyPoints.push(splitWordPoints[i]); 
+                            answerKeyPoints.push(splitWordPoints[splitWord.length - 1]);
+                        }
                 } 
             } else if (textDirection === 'horizontalBackward' || textDirection === 'verticalUp' || textDirection === 'diagonalBackwardDown' || textDirection === 'diagonalBackwardUp'){
                 let reversedSplitWord = splitWord.reverse();
@@ -103,16 +109,24 @@ class App extends React.Component {
                     console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
                     // this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1]);
                     this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
+                        // record first and final point coordinates - for answer key lines
+                        if (i === 0){
+                            answerKeyPoints.push(splitWordPoints[i]); 
+                            answerKeyPoints.push(splitWordPoints[splitWord.length - 1]); 
+                        }
+                    }
                 }
-            }
-        } 
-        // Canvas Image
-        const image = new Image(); 
-        image.src = './devGirl2.png';   
-        image.onload = () => {
-            // Loop -> Build & Export Search Word
-            for (let i = 0; i < this.numPuzzles; i++){
-              
+                console.log('answerKeyPoints', answerKeyPoints); 
+                console.log('answerKeyPoints.length', answerKeyPoints.length); 
+            } 
+            // Canvas Image
+            const image = new Image(); 
+            image.src = './devGirl2.png';   
+            image.onload = () => {
+                // Loop -> Build & Export Search Word
+                for (let i = 0; i < this.numPuzzles; i++){
+                    requestAnimationFrame(() => {
+                    
                     wordArr = allWordArrays[i].split(','); 
                     
                     this.ctx.drawImage(image,this.translateOriginX,this.translateOriginY); 
@@ -136,7 +150,7 @@ class App extends React.Component {
                     this.ctx.textAlign = 'center'; 
                     console.log(titleArr[i]); 
 
-                    const numberedTitle = `#${i+1}. ${titleArr[i]}`;
+                    const numberedTitle = `#${i+1} ${titleArr[i]}`;
                     this.ctx.fillText(numberedTitle, clueStartPosX * 3, clueStartPosY * 1.03);  
                         // Title underline
                         this.ctx.moveTo(clueStartPosX * 1.5, clueStartPosY * 1.032); 
@@ -156,9 +170,10 @@ class App extends React.Component {
                     }
 
                     // Export
-                    this.exportCanvas(`bgPage${i+1}`); 
-            
-              
+                    this.exportANDClearCanvas(`bgPage${i+1}`); 
+                    
+                    // wait for export & clear to complete before moving on
+                       
                         buildGrid(); 
                         availablePoints = gridPoints; 
                         conflictingPointLocations = 0; 
@@ -181,7 +196,7 @@ class App extends React.Component {
                                 );
                                 
                                 this.ctx.font = '220px serif';
-                                this.ctx.fillStyle = 'rgba(0,0,0,1)';  
+                                this.ctx.fillStyle = 'rgba(0,0,0,1)';
                                 this.ctx.textAlign = 'center'; 
                                 drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
                                 let iterations = drawInputs.length / 3; 
@@ -202,11 +217,37 @@ class App extends React.Component {
                             this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1] + (this.scaledHeight * 0.018)); 
                         });
                     
-                    this.exportCanvas(`puzzle${i+1}`);   
-                }
+                        this.exportCanvas(`puzzle${i+1}`);   
+                        // when export complete, draw answer key lines & export again & clear
+                        console.log('answerKeyPoints', answerKeyPoints); 
+                        console.log('draw answer key lines');
+                        for (let i = 0; i < answerKeyPoints.length; i+=2){
+                            // will need to update line styles
+                                this.ctx.textAlign = 'center'; 
+                                this.ctx.lineWidth = 225;
+                                this.ctx.lineCap = 'round';
+                                this.ctx.strokeStyle = 'rgba(204,204,0,0.3)';  
+                                this.ctx.beginPath(); 
+                                this.ctx.moveTo(answerKeyPoints[i][0] + 155, answerKeyPoints[i][1] + 105); 
+                                this.ctx.lineTo(answerKeyPoints[i+1][0] + 180, answerKeyPoints[i+1][1] + 105); 
+                                this.ctx.stroke(); 
+
+                            // this.ctx.strokeStyle = 'black';
+                            // this.ctx.lineWidth = 10; 
+                            // this.ctx.fillStyle = 'rgba(204,204,0)';
+                            // this.ctx.strokeRect(answerKeyPoints[i][0], answerKeyPoints[i][1], ); 
+                            // this.ctx.fillRect(); 
+                        }
+                        this.exportANDClearCanvas(`solution${i+1}`); // i is from larger loop above
+
+                    }); // end initial requestAnimationFrame
+                } 
             }
     }
     exportCanvas = (fileName) => {
+        exportAsImage(this.canvasRef.current, fileName); 
+    }
+    exportANDClearCanvas = (fileName) => {
         exportAsImage(this.canvasRef.current, fileName); 
         this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500);
     }
@@ -231,7 +272,7 @@ class App extends React.Component {
                     console.log(puzzle); 
                     this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .15),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
                     
-                    this.exportCanvas(`page${p}`); 
+                    this.exportANDClearCanvas(`page${p}`); 
                 }
                 
             })
@@ -312,24 +353,13 @@ class App extends React.Component {
 
 export default App; 
 
-// check if any files in downloads folder -> if so, don't run program
-// Custom named files 
-// Script/Child process - move files to public folder ++
-// drawImage background + drawImage puzzle (to scale) & export -*_*-
-    // Fix bug -> file size not working - should be zoomfactor:1
-// convert files to pdf
-// combine files into single PDF
-
-// - add capture of solutions when exporting puzzle
-// - draw solutions puzzles four to a page following standard export (label accordingly)
-
-// remove red border
-// lessen transparency on puzzle background
-// include quotes?
-// include different background images?
-// 
-
 // ***
-// Add `Puzzle #${numPuzzles loop i}${titleArr[i]}` 
 // Modify export function to export 2 versions - one with solutions, one without
 // ***
+
+// export background
+    // clear
+// export puzzle (don't clear)
+// Add lines
+// Export solution
+    // Clear
