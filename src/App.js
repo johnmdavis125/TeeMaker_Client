@@ -135,7 +135,9 @@ class App extends React.Component {
                     this.ctx.fillStyle = 'rgba(0,0,0,1)';  
                     this.ctx.textAlign = 'center'; 
                     console.log(titleArr[i]); 
-                    this.ctx.fillText(titleArr[i], clueStartPosX * 3, clueStartPosY * 1.03); 
+
+                    const numberedTitle = `#${i+1}. ${titleArr[i]}`;
+                    this.ctx.fillText(numberedTitle, clueStartPosX * 3, clueStartPosY * 1.03);  
                         // Title underline
                         this.ctx.moveTo(clueStartPosX * 1.5, clueStartPosY * 1.032); 
                         this.ctx.lineTo(clueStartPosX * 4.5, clueStartPosY * 1.032);
@@ -318,7 +320,16 @@ export default App;
 // convert files to pdf
 // combine files into single PDF
 
-// - adjust puzzle image right
 // - add capture of solutions when exporting puzzle
 // - draw solutions puzzles four to a page following standard export (label accordingly)
-// - Add chart titles from first column of data sheet
+
+// remove red border
+// lessen transparency on puzzle background
+// include quotes?
+// include different background images?
+// 
+
+// ***
+// Add `Puzzle #${numPuzzles loop i}${titleArr[i]}` 
+// Modify export function to export 2 versions - one with solutions, one without
+// ***
