@@ -232,12 +232,19 @@ class App extends React.Component {
                                 this.ctx.lineTo(answerKeyPoints[i+1][0] + 180, answerKeyPoints[i+1][1] + 105); 
                                 this.ctx.stroke(); 
 
-                            // this.ctx.strokeStyle = 'black';
-                            // this.ctx.lineWidth = 10; 
-                            // this.ctx.fillStyle = 'rgba(204,204,0)';
-                            // this.ctx.strokeRect(answerKeyPoints[i][0], answerKeyPoints[i][1], ); 
-                            // this.ctx.fillRect(); 
+                                
+                                // this.ctx.strokeStyle = 'black';
+                                // this.ctx.lineWidth = 10; 
+                                // this.ctx.fillStyle = 'rgba(204,204,0)';
+                                // this.ctx.strokeRect(answerKeyPoints[i][0], answerKeyPoints[i][1], ); 
+                                // this.ctx.fillRect(); 
+                            }
+                        for (let i = 0; i < 20; i++){
+                            answerKeyPoints.shift(); 
+                            // console.log(answerKeyPoints[i]); 
+                            // console.log(answerKeyPoints.length); 
                         }
+                        console.log('answerKeyPoints should be empty', answerKeyPoints); 
                         this.exportANDClearCanvas(`solution${i+1}`); // i is from larger loop above
 
                     }); // end initial requestAnimationFrame
