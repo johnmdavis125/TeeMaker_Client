@@ -125,8 +125,11 @@ class App extends React.Component {
             image.onload = () => {
                 // Loop -> Build & Export Search Word
                 for (let i = 0; i < this.numPuzzles; i++){
+                    // if (i !== 0){ 
+                    //    this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500);
+                    // }
                     requestAnimationFrame(() => {
-                    
+
                     wordArr = allWordArrays[i].split(','); 
                     
                     this.ctx.drawImage(image,this.translateOriginX,this.translateOriginY); 
@@ -153,10 +156,11 @@ class App extends React.Component {
                     const numberedTitle = `#${i+1} ${titleArr[i]}`;
                     this.ctx.fillText(numberedTitle, clueStartPosX * 3, clueStartPosY * 1.03);  
                         // Title underline
+                        this.ctx.beginPath(); 
                         this.ctx.moveTo(clueStartPosX * 1.5, clueStartPosY * 1.032); 
                         this.ctx.lineTo(clueStartPosX * 4.5, clueStartPosY * 1.032);
                         this.ctx.lineWidth = 20; 
-                        this.ctx.stroke(); 
+                        this.ctx.stroke(); //***Look here***
                     // Keywords
                     for (let j = 0; j < wordArr.length; j++){
                         console.log(wordArr)
@@ -173,7 +177,8 @@ class App extends React.Component {
                     this.exportANDClearCanvas(`bgPage${i+1}`); 
                     
                     // wait for export & clear to complete before moving on
-                       
+                
+
                         buildGrid(); 
                         availablePoints = gridPoints; 
                         conflictingPointLocations = 0; 
@@ -222,7 +227,6 @@ class App extends React.Component {
                         console.log('answerKeyPoints', answerKeyPoints); 
                         console.log('draw answer key lines');
                         for (let i = 0; i < answerKeyPoints.length; i+=2){
-                            // will need to update line styles
                                 this.ctx.textAlign = 'center'; 
                                 this.ctx.lineWidth = 225;
                                 this.ctx.lineCap = 'round';
@@ -245,8 +249,9 @@ class App extends React.Component {
                             // console.log(answerKeyPoints.length); 
                         }
                         console.log('answerKeyPoints should be empty', answerKeyPoints); 
+                       
                         this.exportANDClearCanvas(`solution${i+1}`); // i is from larger loop above
-
+                       
                     }); // end initial requestAnimationFrame
                 } 
             }
