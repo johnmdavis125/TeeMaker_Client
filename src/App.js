@@ -273,21 +273,40 @@ class App extends React.Component {
                 console.log(bgPage); 
                 let puzzle = new Image(); 
                 puzzle.src = `./exportedFiles/puzzle${p}.png`
-                console.log(puzzle);    
+                console.log(puzzle);       
                 
                 bgPage.onload = () => {        
                     console.log(bgPage); 
-                    console.log(this.ctx); 
-                    this.ctx.drawImage(bgPage,this.translateOriginX,this.translateOriginY, this.scaledWidth, this.scaledHeight); 
+                    this.ctx.drawImage(bgPage,this.translateOriginX,this.translateOriginY,this.scaledWidth,this.scaledHeight); 
                 }
                 puzzle.onload = () => {        
                     console.log(puzzle); 
                     this.ctx.drawImage(puzzle,this.translateOriginX + (this.scaledWidth * .15),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
                     
-                    this.exportANDClearCanvas(`page${p}`); 
+                    this.exportANDClearCanvas(`puzzlePage${p}`); 
                 }
+            }); 
+        }
+        for (let p = 1; p < numPuzzles + 1; p++){
+            requestAnimationFrame(() => {
+                let bgPageSoln = new Image(); 
+                bgPageSoln.src = `./exportedFiles/bgPage${p}.png`  
+                console.log(bgPageSoln); 
+                let solution = new Image(); 
+                solution.src = `./exportedFiles/solution${p}.png`
+                console.log(solution);       
                 
-            })
+                bgPageSoln.onload = () => {        
+                    console.log(bgPageSoln); 
+                    this.ctx.drawImage(bgPageSoln,this.translateOriginX,this.translateOriginY,this.scaledWidth,this.scaledHeight); 
+                }
+                solution.onload = () => {        
+                    console.log(solution); 
+                    this.ctx.drawImage(solution,this.translateOriginX + (this.scaledWidth * .15),this.translateOriginY + (this.scaledHeight * .082), this.scaledWidth * .7, this.scaledHeight * .7);
+                    
+                    this.exportANDClearCanvas(`solutionPage${p}`); 
+                }
+            }); 
         }
             
     }
