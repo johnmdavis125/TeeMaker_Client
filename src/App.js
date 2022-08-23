@@ -163,7 +163,7 @@ class App extends React.Component {
                         this.ctx.stroke(); //***Look here***
                     // Keywords
                     for (let j = 0; j < wordArr.length; j++){
-                        console.log(wordArr)
+                        // console.log(wordArr)
                         if (j < 5){
                             console.log(wordArr[j]); 
                             this.ctx.fillText(wordArr[j], clueStartPosX * 2.25, clueStartPosY * (1.03 + (.04 * (j + 1)))); 
