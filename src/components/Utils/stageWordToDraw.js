@@ -1,112 +1,170 @@
-let updatedPointsArr = null; 
-let startPointsGenerated = 0; 
-const checkIfPointIsAvailable = (availablePoints, splitWord, randTextDirection, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxWidth, gridBoxHeight) => {
+const selectRandTextDirection = () => {
+    const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
+    let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
+     return randTextDirection; 
+}
+
+
+const genRandStartPos = (gridBoxWidth, gridBoxHeight) => {
+    let randRow = Math.floor((Math.random() * 12) + 1); 
+    let randCol = Math.floor((Math.random() * 16) + 1);
+    let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
+    return startPos;
+}
+
+const shiftTowardCenter = (gridBoxWidth, gridBoxHeight, splitWord, randTextDirection, startPos) => {
+    let splitWordPoints = []; 
+    let shiftTowardCenterFunctionReturnValues = null; 
+
+    if (randTextDirection === 'horizontalForward' || randTextDirection === 'horizontalBackward'){  
+            
+            // Per startPos, determine word's right-most coordinate (Possibly overflows grid in X-direction)
+            let wordGridSpaceX = (splitWord.length - 1) * gridBoxWidth; 
+            let wordEndPositionX = startPos[0] + wordGridSpaceX;  
+            
+            // if overflow, shift word LEFT onto grid
+            let rightEdgeOfGrid = gridBoxWidth * 12; 
+            let gridOverflowInCoordsX = (wordEndPositionX - rightEdgeOfGrid);  
+            let gridOverflowInUnitsX = gridOverflowInCoordsX / gridBoxWidth; 
+            let shiftRangeMaxX = 12 - (splitWord.length - gridOverflowInUnitsX);
+            let shiftRangeMinX = gridOverflowInUnitsX;  
+          
+            if (gridOverflowInCoordsX > 0){
+                startPos[0] -= (((Math.floor(Math.random() * (shiftRangeMaxX + 1))) + shiftRangeMinX) * gridBoxWidth);
+            }
+           
+            // startPos now set, add points of all characters to splitWordPoints array
+            for (let i = 0; i < splitWord.length; i++){
+                splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), startPos[1]]); 
+            }; 
+            shiftTowardCenterFunctionReturnValues = [startPos, splitWordPoints]; 
+
+    } else if (randTextDirection === 'verticalDown' || randTextDirection === 'verticalUp'){
     
-    let numPointsAvailable = 0; 
-    for (let i = 0; i < splitWordPoints.length; i++){ 
+            // Per startPos, determine word's bottom-most coordinate (Possibly overflows grid in Y-direction)
+            let wordGridSpaceY =(splitWord.length - 1) * gridBoxHeight; 
+            let wordEndPositionY = startPos[1] + wordGridSpaceY;  
+            
+            // if overflow, shift word UP onto grid
+            let bottomEdgeOfGrid = gridBoxHeight * 16; 
+            let gridOverflowInCoordsY = (wordEndPositionY - bottomEdgeOfGrid);  
+            let gridOverflowInUnitsY = gridOverflowInCoordsY / gridBoxHeight; 
+            let shiftRangeMaxY = 16 - (splitWord.length - gridOverflowInUnitsY);
+            let shiftRangeMinY = gridOverflowInUnitsY;  
+
+            if (gridOverflowInCoordsY > 0){
+                startPos[1] -= (((Math.floor(Math.random() * (shiftRangeMaxY + 1))) + shiftRangeMinY) * gridBoxHeight);
+            }
+            
+            // startPos now set, add points of all characters to splitWordPoints array
+            for (let i = 0; i < splitWord.length; i++){
+                splitWordPoints.push([startPos[0], (startPos[1] + (gridBoxHeight * i))]); 
+            }; 
+            shiftTowardCenterFunctionReturnValues = [startPos, splitWordPoints]; 
+        
+    } else if (randTextDirection === 'diagonalForwardDown' || randTextDirection === 'diagonalBackwardDown'){
+
+            // Per startPos, determine word's right-most & bottom-most coordinates (Possibly overflows grid in X and/or Y directions)
+            let wordGridSpaceX = (splitWord.length - 1) * gridBoxWidth; 
+            let wordEndPositionX = startPos[0] + wordGridSpaceX;  
+            let wordGridSpaceY = (splitWord.length - 1) * gridBoxHeight; 
+            let wordEndPositionY = startPos[1] + wordGridSpaceY;  
+            
+            // if overflow X, shift word LEFT onto grid
+            let rightEdgeOfGrid = gridBoxWidth * 12; 
+            let gridOverflowInCoordsX = (wordEndPositionX - rightEdgeOfGrid);  
+            let gridOverflowInUnitsX = gridOverflowInCoordsX / gridBoxWidth; 
+            let shiftRangeMaxX = 12 - (splitWord.length - gridOverflowInUnitsX);
+            let shiftRangeMinX = gridOverflowInUnitsX;           
+
+            if (gridOverflowInCoordsX > 0){
+                startPos[0] -= (((Math.floor(Math.random() * (shiftRangeMaxX + 1))) + shiftRangeMinX) * gridBoxWidth);
+            }
+            // if overflow Y, shift word UP onto grid
+            let bottomEdgeOfGrid = gridBoxHeight * 16; 
+            let gridOverflowInCoordsY = (wordEndPositionY - bottomEdgeOfGrid);  
+            let gridOverflowInUnitsY = gridOverflowInCoordsY / gridBoxHeight; 
+            let shiftRangeMaxY = 16 - (splitWord.length - gridOverflowInUnitsY);
+            let shiftRangeMinY = gridOverflowInUnitsY;  
+
+            if (gridOverflowInCoordsY > 0){
+                startPos[1] -= (((Math.floor(Math.random() * (shiftRangeMaxY + 1))) + shiftRangeMinY) * gridBoxHeight);
+            }
+            
+            // startPos now set, add points of all characters to splitWordPoints array
+            for (let i = 0; i < splitWord.length; i++){
+                splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), (startPos[1] + (gridBoxHeight * i))]); 
+            }; 
+            shiftTowardCenterFunctionReturnValues = [startPos, splitWordPoints]; 
+                
+    } else if (randTextDirection === 'diagonalForwardUp' || randTextDirection === 'diagonalBackwardUp'){
+            // Per startPos, determine word's right-most & top-most coordinates (Possibly overflows grid in X and/or Y directions)
+            let wordGridSpaceX =(splitWord.length - 1) * gridBoxWidth; 
+            let wordEndPositionX = startPos[0] + wordGridSpaceX;  
+            let wordGridSpaceY = (splitWord.length - 1) * gridBoxHeight; 
+            let wordEndPositionY = startPos[1] - wordGridSpaceY;  
+            
+            // if overflow X, shift word LEFT onto grid
+            let rightEdgeOfGrid = gridBoxWidth * 12; 
+            let gridOverflowInCoordsX = (wordEndPositionX - rightEdgeOfGrid);  
+            let gridOverflowInUnitsX = gridOverflowInCoordsX / gridBoxWidth; 
+            let shiftRangeMaxX = 12 - (splitWord.length - gridOverflowInUnitsX);
+            let shiftRangeMinX = gridOverflowInUnitsX;  
+
+            if (gridOverflowInCoordsX > 0){
+                startPos[0] -= (((Math.floor(Math.random() * (shiftRangeMaxX + 1))) + shiftRangeMinX) * gridBoxWidth);
+            }
+            // if overflow Y, shift word DOWN onto grid
+            let gridOverflowInCoordsY = -wordEndPositionY;  
+            let gridOverflowInUnitsY = gridOverflowInCoordsY / gridBoxHeight; 
+            let shiftRangeMaxY = 16 - (splitWord.length - gridOverflowInUnitsY);
+            let shiftRangeMinY = gridOverflowInUnitsY;  
+           
+            if (gridOverflowInCoordsY > 0){
+                startPos[1] += (((Math.floor(Math.random() * (shiftRangeMaxY + 1))) + shiftRangeMinY) * gridBoxHeight);
+            }
+            
+            // startPos now set, add points of all characters to splitWordPoints array
+            for (let i = 0; i < splitWord.length; i++){
+                splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), (startPos[1] - (gridBoxHeight * i))]); 
+            }; 
+            shiftTowardCenterFunctionReturnValues = [startPos, splitWordPoints]; 
+    }
+    return shiftTowardCenterFunctionReturnValues; 
+}
+
+const checkIfPointsAreAvailable = (availablePoints, splitWordPoints) => {
+    let inputs = []; 
+    let numCharsInWordAvailable = 0; 
+    for (let i = 0; i < splitWordPoints.length; i++){
         availablePoints.forEach(el => {
             if (splitWordPoints[i][0] === el[0] && splitWordPoints[i][1] === el[1]){
-                numPointsAvailable++; 
-            } 
-        })
+                numCharsInWordAvailable++; 
+            }
+        });
     }
-    
-    if (numPointsAvailable !== splitWordPoints.length){
-        startPointsGenerated++; 
-        genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, splitWord.join(''), randTextDirection, conflictingPointLocations, drawInputs);
+        
+    if (numCharsInWordAvailable !== splitWordPoints.length){
+        inputs.push('repeatLoop'); 
     } else {
+        // remove splitWordPoints from availablePoints array
         for (let n = 0; n < availablePoints.length; n++){
             for (let p = 0; p < splitWordPoints.length; p++){
                 if (availablePoints[n][0] === splitWordPoints[p][0] && availablePoints[n][1] === splitWordPoints[p][1]){
+                    
+                    // console.log(`${splitWordPoints[p]} removed from available points`); 
+                    // console.log(`${availablePoints[n]} removed from available points`); 
                     availablePoints.splice(n,1); 
+                    // console.log(`availablePoints: ${availablePoints.length}`); 
                 }
             }      
         }
-        updatedPointsArr = availablePoints; 
-        drawInputs.push(splitWord, splitWordPoints); 
-        return drawInputs; 
+        
+        inputs.push(splitWordPoints, availablePoints); 
     }
+    return inputs; 
 }
 
-const shiftTowardCenter = (availablePoints, startPos, splitWord, randTextDirection, gridBoxWidth, gridBoxHeight, conflictingPointLocations, drawInputs) => {
-    let wordEndPosition = null;
-    let splitWordPoints = []; 
-
-    if (randTextDirection === 'horizontalForward' || randTextDirection === 'horizontalBackward'){
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[0] + ((splitWord.length - 1)* gridBoxWidth); 
-            if (wordEndPosition > (gridBoxWidth * 12)){
-                startPos[0] -= gridBoxWidth;
-            }
-        }
-        for (let i = 0; i < splitWord.length; i++){
-            splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), startPos[1]]); 
-        }; 
-    } else if (randTextDirection === 'verticalDown' || randTextDirection === 'verticalUp'){
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[1] + ((splitWord.length - 1)* gridBoxHeight); 
-            if (wordEndPosition > (gridBoxHeight * 16)){
-                startPos[1] -= gridBoxHeight;
-            }
-        }
-    
-        for (let i = 0; i < splitWord.length; i++){
-            splitWordPoints.push([startPos[0], (startPos[1] + (gridBoxHeight * i))]); 
-        }; 
-    } else if (randTextDirection === 'diagonalForwardDown' || randTextDirection === 'diagonalBackwardDown'){
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[0] + ((splitWord.length - 1)* gridBoxWidth); 
-            if (wordEndPosition > (gridBoxWidth * 12)){
-                startPos[0] -= gridBoxWidth;
-            }
-        }
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[1] + ((splitWord.length - 1)* gridBoxHeight); 
-            if (wordEndPosition > (gridBoxHeight * 16)){
-                startPos[1] -= gridBoxHeight;
-            }
-        }
-    
-        for (let i = 0; i < splitWord.length; i++){
-            splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), (startPos[1] + (gridBoxHeight * i))]); 
-        }; 
-    } else if (randTextDirection === 'diagonalForwardUp' || randTextDirection === 'diagonalBackwardUp'){
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[0] + ((splitWord.length - 1)* gridBoxWidth); 
-            if (wordEndPosition > (gridBoxWidth * 12)){
-                startPos[0] -= gridBoxWidth;
-            }
-        }
-        for (let i = 0; i < splitWord.length; i++){                
-            wordEndPosition = startPos[1] - ((splitWord.length - 1)* gridBoxHeight); 
-            if (wordEndPosition < (gridBoxHeight)){ // < 0?
-                startPos[1] += gridBoxHeight;
-            }
-        }
-        for (let i = 0; i < splitWord.length; i++){
-            splitWordPoints.push([(startPos[0] + (gridBoxWidth * i)), (startPos[1] - (gridBoxHeight * i))]); 
-        }; 
-    }
-    checkIfPointIsAvailable(availablePoints, splitWord, randTextDirection, splitWordPoints, conflictingPointLocations, drawInputs, gridBoxWidth, gridBoxHeight); 
+export { 
+    selectRandTextDirection, genRandStartPos, shiftTowardCenter, checkIfPointsAreAvailable
 }
-const genRandStartPos = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections) => {
-    if (startPointsGenerated > availablePoints.length){
-        console.log('return');     
-        return; 
-    } else {
-        let randRow = Math.floor((Math.random() * 12) + 1); 
-        let randCol = Math.floor((Math.random() * 16) + 1);
-        let startPos = [randRow * gridBoxWidth, randCol * gridBoxHeight]; 
-        let splitWord = word.split(''); 
-        shiftTowardCenter(availablePoints, startPos, splitWord, randTextDirection, gridBoxWidth, gridBoxHeight, conflictingPointLocations, drawInputs);
-    }
-}
-
-const stageWordToDraw = (availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections) => {
-    genRandStartPos(availablePoints, gridBoxWidth, gridBoxHeight, word, randTextDirection, conflictingPointLocations, drawInputs, textDirections)   
-}
-
-export {
-    stageWordToDraw,
-    updatedPointsArr
-}; 
