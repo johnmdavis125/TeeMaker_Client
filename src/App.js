@@ -7,7 +7,7 @@ import './components/styles/App.css';
 import './components/styles/Canvas.css'; 
 import LayersPanel from './components/LayersPanel';
 import exportAsImage from './components/Utils/exportAsImage';
-import { stageWordToDraw, updatedPointsArr } from './components/Utils/stageWordToDraw';
+import { selectRandTextDirection, genRandStartPos, shiftTowardCenter, checkIfPointsAreAvailable } from './components/Utils/stageWordToDraw'; 
 
 class App extends React.Component {
     constructor(){
@@ -81,7 +81,6 @@ class App extends React.Component {
         }
         buildGrid(); 
         
-        // Define DrawKeyWords Function
         const titleArr = this.state.wordSearchTitleArr.titleArr;
         console.log(titleArr); 
         const allWordArrays = this.state.wordSearchWordArr.wordArr; 
@@ -89,14 +88,17 @@ class App extends React.Component {
         this.numPuzzles = allWordArrays.length; 
         this.setState({numPuzzles: this.numPuzzles});
         let wordArr = []; 
-        let conflictingPointLocations = 0; 
-        let drawInputs = [];
+
         let answerKeyPoints = [];  
+        let drawCount = 0; 
         const drawKeyWords = (splitWord, splitWordPoints, textDirection) => {
             if (textDirection === 'horizontalForward' || textDirection === 'verticalDown' || textDirection === 'diagonalForwardDown' || textDirection === 'diagonalForwardUp'){
+                console.log(splitWord); 
                 for (let i = 0; i < splitWord.length; i++){
                     console.log(splitWord, splitWordPoints[i]); 
                     this.ctx.fillText(splitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
+                    drawCount++; 
+                    console.log(splitWord[i],splitWordPoints[i],drawCount); 
                         // record first and final point coordinates - for answer key lines
                         if (i === 0){
                             answerKeyPoints.push(splitWordPoints[i]); 
@@ -109,6 +111,8 @@ class App extends React.Component {
                     console.log(splitWord, reversedSplitWord, splitWordPoints[i]); 
                     // this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1]);
                     this.ctx.fillText(reversedSplitWord[i], splitWordPoints[i][0] + (this.scaledWidth * 0.025), splitWordPoints[i][1] + (this.scaledHeight * 0.018));
+                    drawCount++; 
+                    console.log(splitWord[i],splitWordPoints[i],drawCount); 
                         // record first and final point coordinates - for answer key lines
                         if (i === 0){
                             answerKeyPoints.push(splitWordPoints[i]); 
@@ -118,6 +122,7 @@ class App extends React.Component {
                 }
                 console.log('answerKeyPoints', answerKeyPoints); 
                 console.log('answerKeyPoints.length', answerKeyPoints.length); 
+                console.log(drawCount); 
             } 
             // Canvas Image
             const image = new Image(); 
@@ -125,13 +130,8 @@ class App extends React.Component {
             image.onload = () => {
                 // Loop -> Build & Export Search Word
                 for (let i = 0; i < this.numPuzzles; i++){
-                    // if (i !== 0){ 
-                    //    this.ctx.clearRect(0,0,this.scaledWidth + 500,this.scaledHeight + 500);
-                    // }
-                    requestAnimationFrame(() => {
-
+                requestAnimationFrame(() => {
                     wordArr = allWordArrays[i].split(','); 
-                    
                     this.ctx.drawImage(image,this.translateOriginX,this.translateOriginY); 
                 
                     // Puzzle Border
@@ -144,7 +144,6 @@ class App extends React.Component {
                     this.ctx.fillStyle = 'whitesmoke';
                     let clueStartPosX = this.scaledWidth * .183;  
                     let clueStartPosY = this.scaledHeight * .81;  
-                    
                     this.ctx.strokeRect(this.scaledWidth * .202, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .2); 
                     this.ctx.fillRect(this.scaledWidth * .202, clueStartPosY, this.scaledWidth * .7, this.scaledHeight * .2); 
                     // Keyword Title
@@ -160,10 +159,9 @@ class App extends React.Component {
                         this.ctx.moveTo(clueStartPosX * 1.5, clueStartPosY * 1.032); 
                         this.ctx.lineTo(clueStartPosX * 4.5, clueStartPosY * 1.032);
                         this.ctx.lineWidth = 20; 
-                        this.ctx.stroke(); //***Look here***
+                        this.ctx.stroke();
                     // Keywords
                     for (let j = 0; j < wordArr.length; j++){
-                        // console.log(wordArr)
                         if (j < 5){
                             console.log(wordArr[j]); 
                             this.ctx.fillText(wordArr[j], clueStartPosX * 2.25, clueStartPosY * (1.03 + (.04 * (j + 1)))); 
@@ -175,84 +173,70 @@ class App extends React.Component {
 
                     // Export
                     this.exportANDClearCanvas(`bgPage${i+1}`); 
-                    
-                    // wait for export & clear to complete before moving on
-                
 
-                        buildGrid(); 
-                        availablePoints = gridPoints; 
-                        conflictingPointLocations = 0; 
-                        drawInputs = [];        
+                    // Prep Grid & Draw Keywords
+                    buildGrid(); 
+                    availablePoints = gridPoints; 
+                    let updatedPointsArr = []; 
+                    let drawInputs = [];  
+                    for (let k = 0; k < wordArr.length; k++){
+                        const randTextDirection = selectRandTextDirection(); 
+                        console.log(randTextDirection); 
+
+                        while (!drawInputs[0]){
+                            let startPos = genRandStartPos(gridBoxWidth, gridBoxHeight); 
+                            let shiftedValues = shiftTowardCenter(gridBoxWidth, gridBoxHeight, wordArr[k].split(''), randTextDirection, startPos); 
+                            let checkedPoints = checkIfPointsAreAvailable(availablePoints,shiftedValues[1]); 
+                            if (checkedPoints[0] === 'repeatLoop'){
+                                console.log('repeat loop'); 
+                            } else {
+                                drawInputs.push(checkedPoints[0], checkedPoints[1]); 
+                            }
+                        }
                         
-                        for (let k = 0; k < wordArr.length; k++){
-                            const textDirections = ['horizontalForward','horizontalForward','horizontalForward', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'horizontalForward', 'horizontalBackward', 'verticalDown', 'verticalUp', 'diagonalForwardDown', 'diagonalForwardUp', 'diagonalBackwardDown', 'diagonalBackwardUp'];
-                            let randTextDirection = textDirections[Math.floor(Math.random() * textDirections.length)];
-                            console.log(randTextDirection); 
-                            
-                            stageWordToDraw( 
-                                availablePoints, 
-                                gridBoxWidth,
-                                gridBoxHeight, 
-                                wordArr[k], 
-                                randTextDirection,
-                                conflictingPointLocations,
-                                drawInputs,
-                                textDirections
-                                );
-                                
-                                this.ctx.font = '220px serif';
-                                this.ctx.fillStyle = 'rgba(0,0,0,1)';
-                                this.ctx.textAlign = 'center'; 
-                                drawKeyWords(drawInputs[0], drawInputs[1], randTextDirection); 
-                                let iterations = drawInputs.length / 3; 
-                                for (let t = 0; t < iterations; t++){
-                                    drawInputs.shift(); 
-                                    drawInputs.shift(); 
-                                }
-                        }
-                        // Fill in remaining letter positions
-                        let fillLetters = []; 
-                        for (let u = 0; u < wordArr.length; u++){
-                            for (let q = 0; q < wordArr[u].length; q++){
-                                fillLetters.push(wordArr[u][q]); 
-                            }
-                        }
-                        updatedPointsArr.forEach(el => {
-                            // this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1]); 
-                            this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1] + (this.scaledHeight * 0.018)); 
-                        });
+                        // Draw Keywords
+                        this.ctx.font = '220px serif';
+                        this.ctx.fillStyle = 'rgba(0,0,0,1)';
+                        this.ctx.textAlign = 'center'; 
+                        drawKeyWords(wordArr[k].split(''), drawInputs[0], randTextDirection); 
+                        updatedPointsArr = drawInputs[1];
+                        drawInputs.shift(); 
+                        drawInputs.shift(); 
+                    }                           
                     
-                        this.exportCanvas(`puzzle${i+1}`);   
-                        // when export complete, draw answer key lines & export again & clear
-                        console.log('answerKeyPoints', answerKeyPoints); 
-                        console.log('draw answer key lines');
-                        for (let i = 0; i < answerKeyPoints.length; i+=2){
-                                this.ctx.textAlign = 'center'; 
-                                this.ctx.lineWidth = 225;
-                                this.ctx.lineCap = 'round';
-                                this.ctx.strokeStyle = 'rgba(204,204,0,0.3)';  
-                                this.ctx.beginPath(); 
-                                this.ctx.moveTo(answerKeyPoints[i][0] + 155, answerKeyPoints[i][1] + 105); 
-                                this.ctx.lineTo(answerKeyPoints[i+1][0] + 180, answerKeyPoints[i+1][1] + 105); 
-                                this.ctx.stroke(); 
-
-                                
-                                // this.ctx.strokeStyle = 'black';
-                                // this.ctx.lineWidth = 10; 
-                                // this.ctx.fillStyle = 'rgba(204,204,0)';
-                                // this.ctx.strokeRect(answerKeyPoints[i][0], answerKeyPoints[i][1], ); 
-                                // this.ctx.fillRect(); 
-                            }
-                        for (let i = 0; i < 20; i++){
-                            answerKeyPoints.shift(); 
-                            // console.log(answerKeyPoints[i]); 
-                            // console.log(answerKeyPoints.length); 
+                    // Fill in remaining grid locations with randomized letters
+                    let fillLetters = []; 
+                    for (let u = 0; u < wordArr.length; u++){
+                        for (let q = 0; q < wordArr[u].length; q++){
+                            fillLetters.push(wordArr[u][q]); 
                         }
-                        console.log('answerKeyPoints should be empty', answerKeyPoints); 
+                    }
+                    updatedPointsArr.forEach(el => {
+                        this.ctx.fillText(fillLetters[(Math.floor(Math.random() * fillLetters.length))], el[0] + (this.scaledWidth * 0.025), el[1] + (this.scaledHeight * 0.018)); 
+                    });
+                    
+                    // Export
+                    this.exportCanvas(`puzzle${i+1}`);   
+                    
+                    // Draw answer key lines, export again & clear canvas
+                    console.log('answerKeyPoints', answerKeyPoints); 
+                    console.log('draw answer key lines');
+                    for (let i = 0; i < answerKeyPoints.length; i+=2){
+                            this.ctx.textAlign = 'center'; 
+                            this.ctx.lineWidth = 225;
+                            this.ctx.lineCap = 'round';
+                            this.ctx.strokeStyle = 'rgba(204,204,0,0.3)';  
+                            this.ctx.beginPath(); 
+                            this.ctx.moveTo(answerKeyPoints[i][0] + 155, answerKeyPoints[i][1] + 105); 
+                            this.ctx.lineTo(answerKeyPoints[i+1][0] + 180, answerKeyPoints[i+1][1] + 105); 
+                            this.ctx.stroke(); 
+                        }
+                    for (let i = 0; i < 20; i++){
+                        answerKeyPoints.shift(); 
+                    }
+                    this.exportANDClearCanvas(`solution${i+1}`); // i is from larger loop above
                        
-                        this.exportANDClearCanvas(`solution${i+1}`); // i is from larger loop above
-                       
-                    }); // end initial requestAnimationFrame
+                }); // end initial requestAnimationFrame
                 } 
             }
     }
