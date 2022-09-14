@@ -179,11 +179,10 @@ class App extends React.Component {
                     availablePoints = gridPoints; 
                     let updatedPointsArr = []; 
                     let drawInputs = [];  
+                    let randTextDirection = null; 
                     for (let k = 0; k < wordArr.length; k++){
-                        const randTextDirection = selectRandTextDirection(); 
-                        console.log(randTextDirection); 
-
                         while (!drawInputs[0]){
+                            randTextDirection = selectRandTextDirection(); 
                             let startPos = genRandStartPos(gridBoxWidth, gridBoxHeight); 
                             let shiftedValues = shiftTowardCenter(gridBoxWidth, gridBoxHeight, wordArr[k].split(''), randTextDirection, startPos); 
                             let checkedPoints = checkIfPointsAreAvailable(availablePoints,shiftedValues[1]); 
@@ -367,14 +366,3 @@ class App extends React.Component {
 }
 
 export default App; 
-
-// ***
-// Modify export function to export 2 versions - one with solutions, one without
-// ***
-
-// export background
-    // clear
-// export puzzle (don't clear)
-// Add lines
-// Export solution
-    // Clear
